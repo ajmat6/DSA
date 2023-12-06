@@ -37,6 +37,7 @@ void dfs(vector<vector<char>>& mat, int h, int w, int row, int col, vector<vecto
             else if(i == 3) dfs(mat, h, w, newRow, newCol, vis, count + 1, temp + "L");
         }
     }
+    vis[row][col] = 0;
 }
 
 int main()

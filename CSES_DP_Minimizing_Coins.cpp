@@ -8,24 +8,42 @@ typedef pair<int, int> pii;
 typedef pair<long, long> pll;
 typedef vector<pii> vpii;
 
-int solve(int money, vi& coins, int sum, vi& dp)
+int solve(int money, vi& coins, vi& dp)
 {
-    if(sum == money) return 0;
-    if(sum > money) return INT_MAX;
+    if(money == 0) return 0;
+    if(money < 0) return INT_MAX;
 
-    if(dp[sum] != -1) return dp[sum];
+    if(dp[money] != -1) return dp[money];
 
     int ans = INT_MAX;
     for(int i=0; i<coins.size(); i++)
     {
-        if(sum + coins[i] <= money)
-        {
-            int temp = solve(money, coins, sum + coins[i], dp);
-            if(temp != INT_MAX) ans = min(ans, 1 + temp);
-        }
+        int temp = solve(money - coins[i], coins, dp);
+        if(temp != INT_MAX) ans = min(ans, 1 + temp);
     }
 
-    return dp[sum] = ans;
+    return dp[money] = ans;
+}
+
+int solve2(int moneyy, vi& coins)
+{
+    vi dp (moneyy + 1, INT_MAX);
+    dp[0] = 0;
+
+    for(int money=1; money<=moneyy; money++)
+    {
+        int ans = INT_MAX;
+        for(int i=0; i<coins.size(); i++)
+        {
+            int temp = INT_MAX;
+            if(money - coins[i] >= 0) temp = dp[money - coins[i]];
+            if(temp != INT_MAX) ans = min(ans, 1 + temp);
+        }
+
+        dp[money] = ans;
+    }
+
+    return dp[moneyy];
 }
 
 int main()
@@ -38,9 +56,12 @@ int main()
 
     vi coins (n);
     for(int i=0; i<n; i++) cin >> coins[i];
-    vi dp (n + 1, -1);
-    int ans = solve(money, coins, 0 ,dp);
-    if(ans == INT_MAX) cout << -1;
+
+    // vi dp (money + 1, -1);
+    // int ans = solve(money, coins, dp);
+
+    int ans = solve2(money, coins);
+    if(ans == INT_MAX) cout << "-1";
     else cout << ans;    
 
     return 0;
