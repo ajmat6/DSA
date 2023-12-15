@@ -13,6 +13,35 @@ typedef vector<pii> vpii;
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
 const int mod = 1000000007;
+int start = -1;
+int endd = -1;
+bool found = false;
+vi ans;
+
+void DFS(int node, vi& vis, vi& parent, unordered_map<int, vi>& adjList)
+{
+    for(auto i: adjList[node])
+    {
+        if(vis[i] == 1 && i != parent[node])
+        {
+            ans.pb(i);
+            start = node;
+            endd = i;
+            found = true;
+            return;
+        }
+
+        else if(vis[i] == 0)
+        {
+            vis[i] = 1;
+            parent[i] = node;
+            DFS(i, vis, parent, adjList);
+            if(found) return;
+        }
+    }
+
+    return;
+}
 
 int main()
 {
@@ -34,55 +63,30 @@ int main()
     }
 
 
-    queue<int> q;
-    q.push(1);
-    vi vis (n + 1, 0);
-    vis[1] = 1;
-    vi parent (n + 1, 0);
-    parent[1] = -1;
-
-    bool found = false;
-    vi path;
-    int start = -1;
-    int end = -1;
-    while(!q.empty())
+    vi parent (n + 1);
+    vi vis (n + 1);
+    for(int i=1; i<=n; i++)
     {
-        int node = q.front(); q.pop();
-        for(auto i: adjList[node])
+        if(!vis[i])
         {
-            if(vis[i] == 1 && i != parent[node])
-            {
-                found = true;
-                path.pb(i);
-                path.pb(node);
-                start = node;
-                end = i;
-                break;
-            }
-
-            else if(vis[i] == 0)
-            {
-                q.push(i);
-                vis[i] = 1;
-                parent[i] = node;
-            }
+            vis[i] = 1;
+            parent[i] = -1;
+            DFS(i, vis, parent, adjList);
+            if(found) break;
         }
-        if(found) break;
     }
 
     if(!found) cout << "IMPOSSIBLE";
     else
     {
-        while(1)
+        while(start != endd)
         {
-            path.pb(parent[start]);
+            ans.pb(start);
             start = parent[start];
-
-            if(start == end) break;
-        }
-
-        cout << path.size() << "\n";
-        for(auto i: path) cout << i << " ";
+        }   
+        ans.pb(endd);
+        cout << ans.size() << "\n";
+        for(auto i: ans) cout << i << " ";
     }
 
     return 0;
