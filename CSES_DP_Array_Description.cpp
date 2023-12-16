@@ -14,35 +14,112 @@ int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
 const int mod = 1000000007;
 
-int solve(vi& nums, int n, int m, int index, vi& dp)
+int solve(vi& nums, int n, int m, int index, int prev, vvi& dp)
 {
     if(index == n) return 1;
 
-    // check dp:
-    if(dp[index] != -1) return dp[index];
+    if(dp[index][prev] != -1) return dp[index][prev];
 
     int ans = 0;
-    if(nums[index] == 0) 
+    if(index == 0)
     {
-        for(int i=1; i<=m; i++)
+        if(nums[index] == 0)
         {
-            nums[index] = i;
-            if(index != 0 && abs(nums[index] - nums[index - 1]) <= 1) ans = (ans + solve(nums, n, m, index + 1, dp)) % mod;
-            else if(index == 0) ans = (ans + solve(nums, n, m, index + 1, dp)) % mod;
+            for(int i=1; i<=m; i++)
+            {
+                nums[index] = i;
+                ans = (ans + solve(nums, n, m, index + 1, i, dp)) % mod;
+                nums[index] = 0;
+            }
+        }
+
+        else ans = (ans + solve(nums, n, m, index + 1, nums[index], dp)) % mod;
+    }
+
+    else 
+    {
+        if(nums[index] == 0)
+        {
+            if(prev - 1 > 0)
+            {
+                nums[index] = prev - 1;
+                ans = (ans + solve(nums, n, m, index + 1, prev - 1, dp)) % mod;
+                nums[index] = 0;
+            }
+            nums[index] = prev;
+            ans = (ans + solve(nums, n, m, index + 1, prev, dp)) % mod;
             nums[index] = 0;
+            if(prev + 1 <= m) 
+            {
+                nums[index] = prev + 1;
+                ans = (ans + solve(nums, n, m, index + 1, prev + 1, dp)) % mod;
+                nums[index] = 0;
+            }
         }
+
+        else if(abs(nums[index] - nums[index - 1]) <= 1) ans = (ans + solve(nums, n, m, index + 1, nums[index], dp)) % mod;
     }
 
-    else
+    return dp[index][prev] = ans;
+}
+
+int solve2(vi& nums, int n, int m)
+{
+    vvi dp (n + 1, vi (m + 1, 0));
+    for(int i=0; i<dp[0].size(); i++)
     {
-        if(index == 0) ans = (ans + solve(nums, n, m, index + 1, dp)) % mod;
-        else 
+        dp[n][i] = 1;
+    }
+
+    for(int index=n-1; index>=0; index--)
+    {
+        for(int prev=m; prev>=0; prev--)
         {
-            if(abs(nums[index] - nums[index - 1]) <= 1) ans = (ans + solve(nums, n, m, index + 1, dp)) % mod;
+            int ans = 0;
+            if(index == 0)
+            {
+                if(nums[index] == 0)
+                {
+                    for(int i=1; i<=m; i++)
+                    {
+                        nums[index] = i;
+                        ans = (ans + dp[index + 1][i]) % mod;
+                        nums[index] = 0;
+                    }
+                }
+
+                else ans = (ans + dp[index + 1][nums[index]]) % mod;
+            }
+
+            else 
+            {
+                if(nums[index] == 0)
+                {
+                    if(prev - 1 > 0)
+                    {
+                        nums[index] = prev - 1;
+                        ans = (ans + dp[index + 1][prev - 1]) % mod;
+                        nums[index] = 0;
+                    }
+                    nums[index] = prev;
+                    ans = (ans + dp[index + 1][prev]) % mod;
+                    nums[index] = 0;
+                    if(prev + 1 <= m) 
+                    {
+                        nums[index] = prev + 1;
+                        ans = (ans + dp[index + 1][prev + 1]) % mod;
+                        nums[index] = 0;
+                    }
+                }
+
+                else if(abs(nums[index] - nums[index - 1]) <= 1) ans = (ans + dp[index + 1][nums[index]]) % mod;
+            }
+
+            dp[index][prev] = ans;
         }
     }
 
-    return dp[index] = ans % mod;
+    return dp[0][0];
 }
 
 int main()
@@ -55,9 +132,10 @@ int main()
     cin >> n >> m;
 
     vi nums (n);
-    for(int i=0; i<n; i++) cin >> nums[i];
-    vi dp (n, -1);
-    cout << solve(nums, n, m, 0, dp) % mod;
+    // for(int i=0; i<n; i++) cin >> nums[i];
+    // vvi dp (n + 1, vi (m + 1, -1));
+    // cout << solve(nums, n, m, 0, 0, dp) % mod;
+    cout << solve2(nums, n, m) % mod;
 
     return 0;
 }
