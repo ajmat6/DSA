@@ -105,6 +105,7 @@ int main()
                 for(auto i: a1) cout << i << " ";
                 cout << "\n";
                 for(auto i: b1) cout << i << " ";
+                cout << "\n";
             }
         }
     }

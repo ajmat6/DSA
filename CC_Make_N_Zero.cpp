@@ -28,9 +28,8 @@ int main()
         int n;
         cin >> n;
 
-        int rem = n % 3;
-        if(rem == 4 || rem == 0) cout << "YES\n";
-        else cout << "NO\n"
+        if(n == 1 || n == 2 || n == 5) cout << "NO\n";
+        else cout << "YES\n";
     }
 
     return 0;

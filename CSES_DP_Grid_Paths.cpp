@@ -50,6 +50,7 @@ int solve2(vector<vector<char>>& grid, int n)
     return dp[0][0];
 }
 
+// space optimisation:
 int solve3(vector<vector<char>>& grid, int n)
 {
     vi curr (n + 1, 0);

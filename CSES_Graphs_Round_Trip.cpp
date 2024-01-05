@@ -22,6 +22,7 @@ void DFS(int node, vi& vis, vi& parent, unordered_map<int, vi>& adjList)
 {
     for(auto i: adjList[node])
     {
+        // if cycle found
         if(vis[i] == 1 && i != parent[node])
         {
             ans.pb(i);
@@ -36,7 +37,7 @@ void DFS(int node, vi& vis, vi& parent, unordered_map<int, vi>& adjList)
             vis[i] = 1;
             parent[i] = node;
             DFS(i, vis, parent, adjList);
-            if(found) return;
+            if(found) return; // if cycle found don't do remaining calls
         }
     }
 

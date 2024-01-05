@@ -25,30 +25,34 @@ int main()
 
     while(t--)
     {
-        int n; 
-        cin >> n;
+        ll n, k, d;
+        cin >> n >> k >> d;
 
-        vi a (n);
+        vll a (n);
+        vll b (k);
         for(int i=0; i<n; i++) cin >> a[i];
+        for(ll i=0; i<k; i++) cin >> b[i];
 
-        if(n == 4)
+        int day = 1;
+        ll ans = 0;
+        while(day <= min(d, n * 2))
         {
-            if(a[0] + a[1] != a[2] + a[3]) cout << "YES\n";
-            else cout << "NO\n";
-        }
-
-        else 
-        {
-            bool same = true;
-            int value = a[0];
-            for(int i=1; i<n; i++)
+            int count = 0;
+            for(int i=0; i<n; i++)
             {
-                if(a[i] != value) same = false;
+                if(a[i] == i + 1) count++;
             }
 
-            if(same) cout << "NO\n";
-            else cout << "YES\n";
+            ans = max(ans, count + (d - day) / 2); // if I do 0 at this step 
+
+            int index = (day - 1) % k;
+            int what = b[index] - 1;
+            for(int i=0; i<=what; i++) a[i] += 1;
+
+            day++;
         }
+
+        cout << ans << "\n";
     }
 
     return 0;

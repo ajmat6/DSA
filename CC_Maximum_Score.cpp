@@ -31,20 +31,16 @@ int main()
         vi v (n);
         for(int i=0; i<n; i++) cin >> v[i];
 
-        int i = 0;
-        int count = 0;
-        while(i < n - 1)
-        {
-            if((v[i] == 0 && v[i + 1] == 1) || (v[i] == 1 && v[i] == 0))
-            {
-                count++;
-                i += 2;
-            }
-            else i++;
-        } 
+        int oneCount = 0;
+        int zeroCount = 0;
 
-        if(count <= n / 2) cout << count << "\n";
-        else cout << n / 2 << "\n";
+        for(auto i: v)
+        {
+            if(i == 0) zeroCount++;
+            else oneCount++;
+        }
+
+        cout << min(oneCount, zeroCount) << "\n";
     }
 
     return 0;

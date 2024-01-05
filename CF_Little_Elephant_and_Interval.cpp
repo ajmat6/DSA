@@ -11,25 +11,30 @@ typedef vector<pii> vpii;
 ll solve(ll num)
 {
     ll total = 0;
-    if(x > 10) total += 10;
+    if(num > 10) total += 9;
     else return num;
 
     string s = to_string(num);
     ll len = s.size();
-    string temp = s.substr(1, s.size() - 1);
-    ll middle = stoi(temp);
-    string first;
-    first  += s[0];
-    int firstDigit = stoi(first);
+    string temp = s.substr(1, s.size() - 2);
 
-    for(int i=1; i<=9; i++)
+    ll middle;
+    if(temp.size() == 0) middle = 0;
+    else middle = stoi(temp);
+    
+    string first = s.substr(0, 1);
+    int firstDigit = stoi(first);
+    
+    string last = s.substr(s.size() - 1, 1);
+    int lastDigit = stoi(last);
+
+    for(int i=1; i<=firstDigit; i++)
     {
         for(int j=0; j<len-1; j++)
         {
-            if(j < len - 2) total += pow(10, i);
-            else if(j == len - 2 && i < firstDigit) total += pow(10, i);
+            if(j <= len - 2 && i < firstDigit) total += pow(10, j);
             else if (j == len - 2 && i == firstDigit) total += middle;
-            else total += 1;
+            else if (j == len - 2 && i == firstDigit && i <= lastDigit) total += 1;
         }
     }
 
@@ -44,8 +49,12 @@ int main()
     ll l, r;
     cin >> l >> r;
 
+    if(r < 10) return r - l + 1;
+
     int left = solve(l - 1);
     int right = solve(r);
+    
+    // cout << left << " " << right << " ";
 
     cout << right - left << "\n";
 

@@ -43,7 +43,7 @@ int main()
         {
             ll sizee = i.second.size();
             
-            if(st.find(i.first) == st.end)
+            if(st.find(i.first) == st.end())
             {
                 if(sizee >= 2) ans += (sizee - 1);
             }
@@ -53,7 +53,7 @@ int main()
                 if(sizee > 2) ans += (sizee - 2);
             }
 
-            for(auto j: i.second) st.push(j);
+            for(auto j: i.second) st.insert(j);
         }
 
         cout << ans << "\n";

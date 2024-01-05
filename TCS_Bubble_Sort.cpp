@@ -7,8 +7,6 @@ typedef vector<ll> vll;
 typedef pair<int, int> pii;
 typedef pair<long, long> pll;
 typedef vector<pii> vpii;
-int a1[1000];
-int a2[1000];
 
 int main()
 {
@@ -16,32 +14,30 @@ int main()
     cin.tie(NULL);
     cout.tie(NULL);
 
-    string input;
-    vector<int> a1;
+    string input1, input2;
+    getline(cin, input1);
+    getline(cin, input2);
+    
 
-    getline(cin, input);
+    stringstream ss1(input1), ss2(input2);
 
-    stringstream ss(input);
+    vector<int> a1, a2;
+
     int num;
-    while (ss >> num) {
+    while (ss1 >> num) {
         a1.push_back(num);
     }
 
-    string input2;
-    vector<int> a2;
-
-    getline(cin, input2);
-
-    stringstream ss2(input2);
-    int num2;
-    while (ss2 >> num2) {
-        a2.push_back(num2);
+    while (ss2 >> num) {
+        a2.push_back(num);
     }
 
     int n = a1.size();
+    bool isSorted;
     for(int i=0; i<n-1; i++)
     {
-        for(int j=0; j<(n-1-i); j++)
+        isSorted = true;
+        for(int j=0; j<n-1-i; j++)
         {
             if(a1[j] > a1[j+1])
             {
@@ -53,14 +49,19 @@ int main()
                 temp = a2[j];
                 a2[j] = a2[j+1];
                 a2[j+1] = temp;
+
+                isSorted = false;
             }
         }
+
+        if(isSorted) break;
     }
 
     for(int i=0; i<n; i++)
     {
-        cout << a2[i] << " ";
+        cout << a2[i];
+        if(i != n-1) cout << " ";
     }
-
+    
     return 0;
 }

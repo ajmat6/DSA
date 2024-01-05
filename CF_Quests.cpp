@@ -54,16 +54,20 @@ int main()
         for(int i=0; i<n; i++) cin >> a[i];
         for(int i=0; i<n; i++) cin >> b[i];
 
-        int currQuest = 0;
-        int currQNo = a[currQuest];
-        int ans = 0;
-        ans += currQNo;
-        currQuest++;
-        k--;
+        // find prefix sum of the array:
+        vector<int> prefix (n);
+        prefix[0] =  a[0];
+        for(int i=1; i<n; i++) prefix[i] = prefix[i-1] + a[i];
 
-        vvi dp (k + 1, vector<int> (n + 1, -1));
-        cout << ans + solve(a, b, n, k, currQuest, b[0], dp) << "\n";
+        int ans = INT_MIN;
+        int maxi = b[0];
+        for(int i=0; i<min(n, k); i++)
+        {
+            ans = max(ans, prefix[i] + ((k - (i + 1)) * maxi));
+            if(i + 1 < n) maxi =  max(maxi, b[i+1]);
+        }
+
+        cout << ans << "\n";
     }
-
     return 0;
 }

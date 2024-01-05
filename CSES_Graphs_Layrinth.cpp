@@ -30,9 +30,9 @@ int main()
         for(int j=0; j<w; j++) cin >> mat[i][j];
     }
 
+    queue<pair<int, int>> q;
     vector<vector<int>> vis (h, vector<int> (w));
     map<pair<int, int>, pair<int, int>> mp;
-    queue<pair<int, int>> q;
 
     for(int i=0; i<h; i++)
     {
@@ -131,3 +131,4 @@ int main()
 
     return 0;
 }
+

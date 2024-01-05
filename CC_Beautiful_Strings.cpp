@@ -19,7 +19,7 @@ void solve(string& s, int n, int index, string temp)
        sort(st.begin(), st.end());
        if(st == temp && mp.find(st) == mp.end()) 
        {
-            ans++;
+            ans++; 
             mp[temp]++;
             cout << temp << endl;
        } 

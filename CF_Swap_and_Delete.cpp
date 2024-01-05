@@ -20,24 +20,34 @@ int main()
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll t;
+    int t;
     cin >> t;
-
+ 
     while(t--)
     {
         string s;
         cin >> s;
-
-        int oneCount = 0;
-        int zeroCount = 0;
+ 
+        // the string that I want:
+        string t = "";
+        unordered_map<char, int> mp;
         for(auto i: s)
         {
-            if(i == '1') oneCount++;
-            else zeroCount++;
+            if(i == '1') t += '0';
+            else t += '1';
+            mp[i]++;
         }
-
-        cout << abs(oneCount - zeroCount) << "\n";
+ 
+        // check for the strings:
+        int i;
+        for(i=0; i<t.size(); i++)
+        {
+            char ch = t[i];
+            if(mp[ch] > 0) mp[ch]--;
+            else break;
+        }
+ 
+        cout << t.size() - i << "\n";
     }
-
     return 0;
 }

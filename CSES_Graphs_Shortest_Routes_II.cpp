@@ -23,6 +23,8 @@ int main()
 
     ll n, m, q;
     cin >> n >> m >> q;
+
+    // floyd warshall uses adjcancy matrix instead of adjcancy list:
     vector<vll> adjMatrix (n + 1, vll (n + 1, LLONG_MAX));
     for(int i=0; i<m; i++)
     {
@@ -30,9 +32,10 @@ int main()
         cin >> a >> b >> c;
 
         adjMatrix[a][b] = min(adjMatrix[a][b], c);
-        adjMatrix[b][a] = min(adjMatrix[b][a], c);
+        adjMatrix[b][a] = min(adjMatrix[b][a], c); // there can be two edges b/w a pair of nodes and we will take shorter path one
     }
 
+    // setting distance same pair of nodes as zero:
     for(ll i=0; i<=n; i++)
     {
         for(ll j=0; j<=n; j++)
@@ -57,35 +60,6 @@ int main()
     {
         ll a, b;
         cin >> a >> b;
-
-        // vll dist (n + 1, LLONG_MAX);
-        // vll vis (n + 1, 0);
-        // priority_queue<pll, vpll, greater<pll>> pq;
-        // pq.push({0, a});
-        // dist[a] = 0;
-
-        // while(!pq.empty())
-        // {
-        //     auto top = pq.top(); pq.pop();
-        //     ll node = top.S;
-        //     ll distt = top.F;
-
-        //     if(vis[node]) continue;
-        //     if(node == b) break;
-
-        //     vis[node] = 1;
-        //     for(auto &i: adjList[node])
-        //     {
-        //         ll to = i.F;
-        //         ll edge = i.S;
-
-        //         if(!vis[to] && distt + edge < dist[to])
-        //         {
-        //             dist[to] = distt + edge;
-        //             pq.push({dist[to], to});
-        //         }
-        //     }
-        // }
 
         adjMatrix[a][b] = adjMatrix[a][b] == LLONG_MAX ? -1 : adjMatrix[a][b];
         cout << adjMatrix[a][b] << "\n";
