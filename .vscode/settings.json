@@ -18,7 +18,8 @@
         "algorithm": "cpp",
         "limits": "cpp",
         "utility": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "iterator": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
