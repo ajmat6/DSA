@@ -28,19 +28,11 @@ int main()
         ll n;
         cin >> n;
 
-        ll sum = 1;
-        ll odd = 3;
-        ll times = 1;
-        while(sum < n)
-        {
-            sum += odd;
-            odd += 2;
-            if(sum < n) times++;
-            else break;
-        }        
+        ll sqroot = sqrtl(n);
 
-        if(n % 2 == 1 && times % 2 == 1) cout << times / 2 + 1;
-        else cout << times / 2 << "\n";
+        if(n % 2 == 0) cout << sqroot / 2 << "\n";
+        else cout << sqroot / 2 + sqroot % 2 << "\n";
+        
     }
 
     return 0;

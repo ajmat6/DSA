@@ -33,7 +33,7 @@ int main()
         for(int i=0; i<n; i++) cin >> a[i];
         for(ll i=0; i<k; i++) cin >> b[i];
 
-        int day = 1;
+        ll day = 1;
         ll ans = 0;
         while(day <= min(d, n * 2))
         {

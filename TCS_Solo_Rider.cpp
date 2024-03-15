@@ -118,14 +118,7 @@
 // On calculating the total distance traveled by all the vehicles in order to reach their customers, the output is 12.
 
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <map>
-#include <cmath>
-#include <limits>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 // struct for storing a coordinate: 
@@ -148,15 +141,18 @@ struct Car {
 };
 
 // manhattan distance function:
-int manhattanDistance(Coordinate p1, Coordinate p2) {
+int manhattanDistance(Coordinate p1, Coordinate p2) 
+{
     return abs(p1.x - p2.x) + abs(p1.y - p2.y);
 }
 
-bool sortPassengerNames(const Passenger& p1, const Passenger& p2) {
+bool sortPassengerNames(const Passenger& p1, const Passenger& p2) 
+{
     return p1.name < p2.name;
 }
 
-int main() {
+int main() 
+{
     int num_passengers, num_cars; // pasengers and cars input:
     cin >> num_passengers >> num_cars;
     
@@ -174,7 +170,8 @@ int main() {
     
     sort(passengers.begin(), passengers.end(), sortPassengerNames); // Sort passengers by names
     int total_distance = 0;
-    for (auto& passenger : passengers) {
+    for (auto& passenger : passengers)
+    {
         sort(cars.begin(), cars.end(), [&passenger](const Car& c1, const Car& c2) {
           	// finding manhattan distance b/w two cars and a passenger
             int dist1 = manhattanDistance(passenger.location, c1.location);
@@ -191,8 +188,10 @@ int main() {
             }
         });
 
-        for (auto& car : cars) {
-            if (!car.assigned) {
+        for (auto& car : cars)
+        {
+            if (!car.assigned)
+            {
                 car.assigned = true;
                 car.assigned_passenger = passenger.name;
                 total_distance += manhattanDistance(passenger.location, car.location);

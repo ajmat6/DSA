@@ -32,38 +32,27 @@ int main()
         cin >> n >> k >> x;
 
         vll a(n);
-        ll sum = 0;
-        for(int i=0; i<n; i++) {
+        for(ll i=0; i<n; i++) {
             cin >> a[i];
-            sum += a[i];
         }
 
-        sort(a.begin(), a.end(), cmp);
-        ll firstXSum = 0;
-        for(int i=0; i<x; i++) {
-            if(i < n) firstXSum += a[i];
-        }
-
-        ll rem = sum - firstXSum; // when 0 elements are removed:
-        ll ans = rem - firstXSum;
-
-        ll lower = 0; ll higher = x;
-        for(ll i=0; i<k; i++) {
-            if(higher < n) {
-                firstXSum = firstXSum - a[lower] + a[higher];
-                rem = rem - a[higher];
-                ans = max(ans, rem - firstXSum);
-                lower++;
-                higher++;
-            } 
-
-            else if(lower < n) {
-                firstXSum = firstXSum - a[lower];
-                ans = max(ans, rem - firstXSum);
-                lower++;
+        sort(a.begin(), a.end());
+        ll sum = 0;
+        int index = n - x;
+        for(ll i=0; i<n; i++) {
+            if(i < index) {
+                sum += a[i];
             }
+            else sum -= a[i];
+        }
 
-            else break;
+        ll ans = sum;
+        for(ll i=n-1; i>=n-k; i--) {
+            if(i >= index) sum += a[i];
+            if(index - 1 >= 0) sum -= 2 * a[index - 1];
+
+            index--;
+            ans = max(ans, sum);
         }
 
         cout << ans << "\n";

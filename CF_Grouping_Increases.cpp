@@ -28,13 +28,13 @@ int main()
         int n;
         cin >> n;
 
-        vi a (n);
-        for(int i=0; i<n; i++) cin >> a[i];
+        vi ar (n);
+        for(int i=0; i<n; i++) cin >> ar[i];
 
         ll ans = 0;
         int a = INT_MAX;
         int b = INT_MAX;
-        for(auto i: a)
+        for(auto i: ar)
         {
             if(a > b) 
             {

@@ -33,53 +33,29 @@ int main()
             ll a, b;
             cin >> a >> b;
             temp.pb({a, b});
-            maxi = max(maxi, max(a, b));
         }
 
-        ll low = temp[0].first;
-        ll high = maxi;
-        ll ans = INT_MAX;
-
-        // cout << maxi << " ";
-
+        ll low = temp[0].F; ll high = 1e9; ll ans = INT_MAX;
         while(low <= high) {
             ll mid = low + (high - low) / 2;
-            // cout << mid << " ";
 
-            // check mid is possible or not:
             bool poss = true;
             pair<int, int> seg = {0, mid};
             for(int i=0; i<n; i++) {
-                int lower = temp[i].first;
-                int higher = temp[i].second;
+                int lower = temp[i].F;
+                int higher = temp[i].S;
 
-                if(lower > seg.second || higher < seg.first) {
+                if(lower > seg.S || higher < seg.F) {
                     low = mid + 1;
                     poss = false;
                     break;
                 }
 
-                else {
-                    if(lower >= seg.first && higher <= seg.second) {
-                        seg = {lower, higher};
-                        ll leftExpand = max((ll) 0, seg.first - mid);
-                        ll rightExpand = seg.second + mid;
-                        // cout << leftExpand << " " << rightExpand << " ";
-                        seg = {leftExpand, rightExpand};
-                    } 
-                    else if(lower >= seg.first && higher > seg.second){
-                        seg = {lower, seg.second};
-                        ll leftExpand = max((ll) 0, seg.first - mid);
-                        ll rightExpand = seg.second + mid;
-                        seg = {leftExpand, rightExpand};
-                    } 
-                    else if(lower < seg.first && higher <= seg.second){
-                        seg = {seg.first, higher};
-                        ll leftExpand = max((ll) 0, seg.first - mid);
-                        ll rightExpand = min(maxi, seg.second + mid);
-                        seg = {leftExpand, rightExpand};
-                    }
-                }
+                seg.F = max(seg.F, lower);
+                seg.S = min(seg.S, higher);
+                ll leftExpand = max((ll) 0, seg.F - mid);
+                ll rightExpand = seg.S + mid;
+                seg = {leftExpand, rightExpand};
             }
 
             if(poss) {

@@ -1,64 +1,26 @@
+
 class Solution {
 public:
+    // TC is O(n) becoz each node is traversed once and space complexity is O(n) for queue
     bool isEvenOddTree(TreeNode* root) {
-        queue<TreeNode*> q; // {{node, level}, prev};
-        q.push(root);
+        // using level order traversal:
+        queue<TreeNode*> q;
         int level = 0;
+        q.push(root);
 
-        while(!q.empty())
-        {
-            int size = q.size();
-            int index = 0;
-            int prev = 0;
+        while(!q.empty()) {
+            int sizeOfQueue = q.size();
+            int prevNodeValue = -1;
+            for(int i=0; i<sizeOfQueue; i++) {
+                TreeNode* node = q.front(); q.pop();
+                if((level % 2 == 0) && (node -> val % 2 != 1 || node -> val <= prevNodeValue)) return false;
+                else if((level % 2 == 1) && (node -> val % 2 != 0 || (prevNodeValue != -1 && node -> val >= prevNodeValue))) return false;
 
-            for(int i=0; i<size; i++)
-            {
-                cout << "level is " << level << " ";
-                TreeNode* front = q.front();
-                q.pop();
-
-                // if front is first node of the level:
-                if(index == 0)
-                {
-                    // even level conditions:
-                    if(level % 2  == 0)
-                    {
-                        if(front -> val % 2 == 0) return false;
-                        prev = front -> val;
-                    } 
-
-                    // odd level conditions:
-                    else
-                    {
-                        if(front -> val % 2 != 0) return false;
-                        prev = front -> val;
-                    }
-
-                    index++;
-                }
-
-                // other than first node of the level:
-                else
-                {
-                    if(level % 2 == 0)
-                    {
-                        if(front -> val % 2 == 0 || front -> val <= prev) return false;
-                        prev = front -> val;
-                    }
-
-                    else
-                    {
-                        if(front -> val % 2 != 0 || front -> val >= prev) return false;
-                        prev = front -> val;
-                    }
-                }
-
-                // left and right child push into queue:
-                if(front -> left) q.push(front -> left);
-                if(front -> right ) q.push(front -> right);
-            
+                // common part for both even and odd level:
+                prevNodeValue = node -> val;
+                if(node -> left) q.push(node -> left);
+                if(node -> right) q.push(node -> right);
             }
-
             level++;
         }
 
