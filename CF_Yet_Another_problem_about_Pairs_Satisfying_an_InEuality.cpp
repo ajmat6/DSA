@@ -29,6 +29,20 @@ int main()
 
         vll nums (n);
         for(int i=0; i<n; i++) cin >> nums[i];
+
+        vll temp;
+        for(int i=0; i<n; i++) {
+            if(nums[i] < i + 1) temp.pb(i + 1);
+        }
+
+        ll ans = 0;
+        for(int i=1; i<temp.size(); i++) {
+            ll element = nums[temp[i] - 1];
+            int index = lower_bound(temp.begin(), temp.end(), element) - temp.begin();
+            ans += index;
+        }
+
+        cout << ans << "\n";
     }
 
     return 0;
