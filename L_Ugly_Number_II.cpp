@@ -21,10 +21,8 @@ public:
                 n = n / 5;
                 continue;
             }
-
             else break;
         }
-
         if(n == 1) return true;
         else return false;
     }
