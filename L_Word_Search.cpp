@@ -23,7 +23,6 @@ public:
                 else board[newRow][newCol] = word[index];  // backtrack
             }
         }
-
         return false;
     }
 
