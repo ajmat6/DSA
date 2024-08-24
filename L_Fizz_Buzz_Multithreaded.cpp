@@ -1,27 +1,21 @@
 class FizzBuzz {
 private:
+    condition_variable cv;
+    mutex m;
     int n;
     int i;
-    mutex m;
-    condition_variable cv;
 public:
     FizzBuzz(int n) {
         this->n = n;
-        this -> i = 1;
+        this->i = 1;
     }
 
     // printFizz() outputs "fizz".
     void fizz(function<void()> printFizz) {
-        unique_lock<mutex> lock(m);
-        while(i <= n)
-        {
-            while(i <= n && ((i % 3 == 0) && (i % 5 != 0)) == 0)
-            {
-                cv.wait(lock);
-            }
-
-            if(i <= n)
-            {
+        while(i <= n) {
+            unique_lock<mutex> lock(m);
+            while(i <=n && (((i % 3 == 0) && (i % 5 != 0)) == 0)) cv.wait(lock);
+            if(i <=n) {
                 printFizz();
                 i++;
             }
@@ -31,16 +25,10 @@ public:
 
     // printBuzz() outputs "buzz".
     void buzz(function<void()> printBuzz) {
-        unique_lock<mutex> lock(m);
-        while(i <= n)
-        {
-            while(i <= n && ((i % 3 != 0) && (i % 5 == 0)) == 0)
-            {
-                cv.wait(lock);
-            }
-
-            if(i <= n)
-            {
+        while(i <= n) {
+            unique_lock<mutex> lock(m);
+            while(i <=n && (((i % 5 == 0) && (i % 3 != 0)) == 0)) cv.wait(lock);
+            if(i <=n) {
                 printBuzz();
                 i++;
             }
@@ -50,16 +38,10 @@ public:
 
     // printFizzBuzz() outputs "fizzbuzz".
 	void fizzbuzz(function<void()> printFizzBuzz) {
-        unique_lock<mutex> lock(m);
-        while(i <= n)
-        {
-            while(i <= n && ((i % 3 == 0) && (i % 5 == 0)) == 0)
-            {
-                cv.wait(lock);
-            }
-
-            if(i <= n)
-            {
+        while(i <= n) {
+            unique_lock<mutex> lock(m);
+            while(i <=n && (((i % 3 == 0) && (i % 5 == 0)) == 0)) cv.wait(lock);
+            if(i <=n) {
                 printFizzBuzz();
                 i++;
             }
@@ -69,16 +51,10 @@ public:
 
     // printNumber(x) outputs "x", where x is an integer.
     void number(function<void(int)> printNumber) {
-        unique_lock<mutex> lock(m);
-        while(i <= n)
-        {
-            while(i <= n && ((i % 3 != 0) && (i % 5 != 0)) == 0)
-            {
-                cv.wait(lock);
-            }
-
-            if(i <= n)
-            {
+        while(i <= n) {
+            unique_lock<mutex> lock(m);
+            while(i <=n && (((i % 3 != 0) && (i % 5 != 0)) == 0)) cv.wait(lock);
+            if(i <=n) {
                 printNumber(i);
                 i++;
             }

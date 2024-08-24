@@ -1,118 +1,72 @@
-// class Solution {
-// public:
-//     int findDuplicate(vector<int>& nums) {
-//         // Using cycle detection: TC = O(n) and SC = O(1)
-//         // for(auto i: nums)
-//         // {
-//         //     int num = abs(i);
-//         //     if(nums[num] < 0)
-//         //     {
-//         //         return num;
-//         //     }
-
-//         //     else
-//         //     {
-//         //         nums[num] = -nums[num];
-//         //     }
-//         // }
-
-//         // return 0;
-
-
-//         // Using floyds cycle detection: TC = O(n) and SC = O(1)
-//         // int slow = nums[0]; 
-//         // int fast = nums[0];
-
-//         // do
-//         // {
-//         //     // slow one time and fast time move forward:
-//         //     slow = nums[slow];
-//         //     fast = nums[nums[fast]];
-//         // }while(fast != slow);
-
-//         // // now again move both once at a time:
-//         // fast = nums[0];
-
-//         // while(fast != slow)
-//         // {
-//         //     slow = nums[slow];
-//         //     fast = nums[fast];
-//         // }
-
-//         // return slow;
-
-//         // return nums[slow];
-
-//         int low = 1;
-//         int high = nums.size() - 1;
-
-//         while(low < high)
-//         {
-//             int mid = low + (high - low) / 2;
-
-//             int count = 0;
-//             for(auto i: nums)
-//             {
-//                 if(nums[i] >= low && nums[i] <= mid) count++;
-//             }
-//             cout << low << high << endl;
-
-//             if(count > mid - low + 1) high = mid;
-//             else low = mid + 1;
-
-//         }
-
-//         return low;
-
-//         // using sorting: TC = O(nlogn) SC = O(1);
-//         // sort(nums.begin(), nums.end());
-//         // for(int i=1; i<nums.size(); i++)
-//         // {
-//         //     if(nums[i] == nums[i - 1]) return nums[i];
-//         // }
-
-//         // return 0;
-
-//         // Using sets: TC = O(n) and SC = O(n)
-//         // unordered_set<int> st;
-//         // for(int i=0; i<nums.size(); i++)
-//         // {
-//         //     if(st.find(nums[i]) == st.end()) st.insert(nums[i]);
-//         //     else return nums[i];
-//         // }
-
-//         // return 0;
-//     }
-// };
-
 class Solution {
 public:
-  int help(vector<int>& nums, int low, int high) {
-    int count = 0;
-    for (const int& num : nums) {
-        if (num >= low && num <= high) {
-            count++;
+    int findDuplicate(vector<int>& nums) {
+        // for(auto i: nums) {
+        //     int value = abs(i);
+        //     if(nums[value - 1] < 0) return value;
+        //     else nums[value - 1] *= -1;
+        // }
+
+        // return 0;
+
+
+
+        // using binary search:
+        // int low = 1;
+        // int high = nums.size() - 1;
+
+        // while(low < high) {
+        //     int mid = low + (high - low) / 2;
+            
+        //     int count = 0;
+        //     for(auto i: nums) {
+        //         if(i >= low && i <= mid) count++;
+        //     }
+
+        //     if(count > mid - low + 1) high = mid;
+        //     else low = mid + 1;
+        // }
+
+        // return high;
+
+
+        // using bit manipulation: nlogn time (n for inner and logn as each no has logn set bits) and constant space
+        // int ans = 0;
+        // for(int i=0; i<=31; i++) {
+        //     // find no of elements in nums have ith bit as 1:
+        //     int mask = 1 << i;
+        //     int count = 0; int count2 = 0;
+        //     for(int j=0; j<nums.size(); j++) {
+        //         if(nums[j] & mask) count++;
+        //         if(j & mask) count2++;
+        //     }
+
+        //     if(count > count2) ans |= mask;
+        // }
+
+        // return ans;
+
+
+
+        // using fast and slow pointer: n time and constant space
+        int slow = nums[0];
+        int fast = nums[0];
+
+        // do while loop used because initially both slow and fast are equal
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while(fast != slow);
+
+        // again make slow at start:
+        slow = nums[0];
+
+        // now move slow and fast equally:
+        while(slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
         }
+
+        return slow;
     }
-    return count;
-}
-
-int findDuplicate(vector<int>& nums) {
-    int low = 1;
-    int high = nums.size() - 1;
-
-    while (low < high) {
-        int mid = low + (high - low) / 2;
-        int count = help(nums, low, mid);
-
-        if (count > mid - low + 1) {
-            high = mid;
-        } 
-        else {
-            low = mid + 1;
-        }
-    }
-
-    return low;
-}
 };

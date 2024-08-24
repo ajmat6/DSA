@@ -1,53 +1,65 @@
 class Solution {
 public:
-    void solve(TreeNode* root, int val, int depth, int level)
-    {
-        if(level + 1 == depth)
-        {
-            if(root -> left)
-            {
-                TreeNode* Node = new TreeNode(val);
-                Node -> left = root -> left;
-                root -> left = Node;
-            }
-
-            else
-            {
-                TreeNode* Node = new TreeNode(val);
-                root -> left = Node;
-            }
-
-            if(root -> right)
-            {
-                TreeNode* Node = new TreeNode(val);
-                Node -> right = root -> right;
-                root -> right = Node;
-            }
-
-            else
-            {
-                TreeNode* Node = new TreeNode(val);
-                root -> right = Node;
-            }
-
+    void solve(TreeNode* root, int currDepth, int depth, int val) {
+        if(currDepth == depth - 1) {
+            TreeNode* leftt = new TreeNode(val);
+            TreeNode* rightt = new TreeNode(val);
+            leftt -> left = root -> left;
+            rightt -> right = root -> right;
+            root -> left = leftt;
+            root -> right = rightt;
             return;
         }
 
-        // left and right subtree call:
-        if(root -> left) solve(root -> left, val, depth, level+1);
-        if(root -> right) solve(root -> right, val, depth, level+1);
+        if(root -> left) solve(root -> left, currDepth + 1, depth, val);
+        if(root -> right) solve(root -> right, currDepth + 1, depth, val);
     }
 
     TreeNode* addOneRow(TreeNode* root, int val, int depth) {
-        // if depth is 1:
-        if(depth == 1)
-        {
+        // using dfs traversal:
+        // if(depth == 1) {
+        //     TreeNode* newRoot = new TreeNode(val);
+        //     newRoot -> left = root;
+        //     return newRoot;
+        // }
+
+        // solve(root, 1, depth, val);
+        // return root;
+
+
+
+
+        // using bfs traversal: Level order traversal
+        if(depth == 1) {
             TreeNode* newRoot = new TreeNode(val);
             newRoot -> left = root;
             return newRoot;
         }
 
-        solve(root, val, depth, 1);
+        int level = 1;
+        queue<TreeNode*> q;
+        q.push(root);
+
+        while(!q.empty()) {
+            int size = q.size();
+            for(int i=0; i<size; i++) {
+                TreeNode* node = q.front();
+                q.pop();
+
+                if(level == depth - 1) {
+                    TreeNode* leftt = new TreeNode(val);
+                    TreeNode* rightt = new TreeNode(val);
+                    leftt -> left = node -> left;
+                    rightt -> right = node -> right;
+                    node -> left = leftt;
+                    node -> right = rightt;
+                }
+
+                if(node -> left) q.push(node -> left);
+                if(node -> right) q.push(node -> right);
+            }
+            level++;
+        }
         return root;
     }
 };

@@ -58,38 +58,38 @@ public:
         // return intervals;
 
 
-        // 2nd Approach: Merge intervals:
-        intervals.push_back(newInterval);
-        sort(intervals.begin(), intervals.end());
 
-        vector<vector<int>> ans;
 
-        for(auto i: intervals)
-        {
-            int size = ans.size();
+        // // use merge sort and insert (same like merge intervals): nlogn time
+        // in.push_back(ni);
+        // sort(in.begin(), in.end());
+        // vector<vector<int>> ans;
+        // for(auto &i: in) {
+        //     int size = ans.size();
+        //     if(size == 0 || i[0] > ans[size-1][1]) ans.push_back(i);
+        //     else ans[size-1][1] = max(ans[size-1][1], i[1]);
+        // }
+        // return ans;
 
-            // first value to insert in the and:
-            if(size == 0) ans.push_back(i);
 
-            // case like (0, 5) and (3, 4) where (3, 4) is already in the range of (0, 5):
-            else if(ans[size-1][1] >= i[0] && ans[size-1][1] >= i[1])
-            {
-                continue;
-            }
 
-            // case like (0, 5) and (4, 6) or (0, 5) and (5, 6):
-            else if(ans[size-1][1] >= i[0] && ans[size-1][1] < i[1])
-            {
-                ans[size-1][1] = i[1];
-            }
 
-            // rest of the cases:
-            else
-            {
-                ans.push_back(i);
-            }
+        // using insert: n time:
+        vector<vector<int>> ans; int i = 0;
+
+        // insert intervals that are not coming in newInterval range (before it):
+        for(; i < in.size() && in[i][1] < ni[0]; i++) ans.push_back(in[i]);
+
+        // find merged interval
+        int a = ni[0]; int b= ni[1];
+        for(; i<in.size() && in[i][0] <= ni[1]; i++) {
+            a = min(in[i][0], a);
+            b = max(in[i][1], b);
         }
+        ans.push_back({a, b}); // insert the merged interval
 
+        // insert remaining interval:
+        for(; i<in.size(); i++) ans.push_back(in[i]);
         return ans;
     }
 };

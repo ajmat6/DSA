@@ -1,4 +1,4 @@
-class MyCircularQueue {
+sclass MyCircularQueue {
     int *arr;
     int size;
     int front;
@@ -12,6 +12,7 @@ public:
     }
     
     bool enQueue(int value) {
+        
         //check for full
         if((front == 0 && rear == size - 1) || (rear == (front - 1)))
         {

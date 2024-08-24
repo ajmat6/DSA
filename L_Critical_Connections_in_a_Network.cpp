@@ -1,54 +1,38 @@
-// Bridges in a Graph:
-
 class Solution {
 public:
-    int timer = 1;
-    void DFS(int node, int parent, unordered_map<int, list<int>>& adjList, vector<int>& vis, vector<int>& tin, vector<int>& low, vector<vector<int>>& ans)
-    {
+    void solve(int n, unordered_map<int, vector<int>>& adjList, int& timer, int node, int parent, vector<vector<int>>& ans, vector<int>& disc, vector<int>& low, vector<int>& vis) {
         vis[node] = 1;
-        tin[node] = low[node] = timer;
-        timer++;
+        disc[node] = timer;
+        low[node] = timer;
 
-        for(auto i: adjList[node])
-        {
-            if(i == parent) continue;
-            if(vis[i] == 0)
-            {
-                DFS(i, node, adjList, vis, tin, low, ans);
-                low[node] = min(low[node], low[i]);
-
-                // check if its adj nodes lowest time is greater than its time of insertion: Bridge present:
-                if(low[i] > tin[node])
-                {
-                    ans.push_back({node, i});
-                }
+        for(auto i: adjList[node]) {
+            if(vis[i] == 0) {
+                timer++;
+                solve(n, adjList, timer, i, node, ans, disc, low, vis);
             }
-
-            // if adj node is already vis, check for updated lowest time: when 2 will check for its adj node 0 which is not its parent(1 is parent of 2) and its lowest time will get updated:
-            else
-            {
-                low[node] = min(low[node], low[i]);
+            if(i != parent && low[i] < low[node]) low[node] = low[i];
+            if(low[i] > disc[node]) {
+                ans.push_back({i, node});
             }
         }
+
+        return;
     }
 
     vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
-        // creating adjacancy list:
-        unordered_map<int, list<int>> adjList;
-        for(auto i: connections)
-        {
-            int u = i[0];
-            int v = i[1];
-
-            adjList[u].push_back(v);
-            adjList[v].push_back(u);
+        unordered_map<int, vector<int>> adjList;
+        for(auto i: connections) {
+            adjList[i[0]].push_back(i[1]);
+            adjList[i[1]].push_back(i[0]);
         }
 
+        vector<int> disc (n, -1);
+        vector<int> low (n, -1);
         vector<int> vis (n, 0);
-        vector<int> tin (n, 0);
-        vector<int> low (n, 0);
+
+        int timer = 0;
         vector<vector<int>> ans;
-        DFS(0, -1, adjList, vis, tin, low, ans);
+        solve(n, adjList, timer, 0, -1, ans, disc, low, vis);
         return ans;
     }
-};
+223waqqq1

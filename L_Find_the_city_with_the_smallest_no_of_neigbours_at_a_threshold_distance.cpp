@@ -1,63 +1,81 @@
 class Solution {
 public:
-    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
-        // find the min distance to reach between evry city: Floyd Warshall:
-        int row = edges.size();
+    int findTheCity(int n, vector<vector<int>>& edges, int dt) {
+        // // Creation of the adjcancy list:
+        // unordered_map<int, vector<pair<int, int>>> adjList;
+        // for(auto i: edges) {
+        //     adjList[i[0]].push_back({i[1], i[2]});
+        //     adjList[i[1]].push_back({i[0], i[2]});
+        // }
 
-        vector<vector<int>> cost (n, vector<int> (n, INT_MAX));
+        // // using dijkstra algo:
+        // int leastCity = INT_MAX;
+        // int ans = -1;
+        // for(int i=0; i<n; i++) {
+        //     vector<int> dist (n, INT_MAX);
+        //     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        //     pq.push({0, i});
 
-        // adj matrix creation:
-        for(int i=0; i<row; i++)
-        {
-            int u = edges[i][0];
-            int v = edges[i][1];
-            int w = edges[i][2];
+        //     while(!pq.empty()) {
+        //         int distt = pq.top().first;
+        //         int node = pq.top().second; pq.pop();
+        //         // if(dist[node] < distt) continue;
 
-            cost[u][v] = w;
-            cost[v][u] = w; // as it is undirected graph
+        //         if(distt < dist[node]) {
+        //             for(auto j: adjList[node]) {
+        //                 int newNode = j.first;
+        //                 int weight = j.second;
+        //                 if(distt + weight < dist[newNode]) {
+        //                     dist[newNode] = distt + weight;
+        //                     pq.push({dist[newNode], newNode});
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     int count = 0;
+        //     for(int j=0; j<n; j++) {
+        //         if(j != i && dist[j] <= dt) count++;
+        //     }
+        //     if(count <= leastCity) {
+        //         leastCity = count;
+        //         ans = i;
+        //     }
+        // }
+
+        // return ans;
+
+
+
+
+        // using floyd warshall algo:
+        vector<vector<int>> adjMatrix (n, vector<int> (n, 1e9));
+        for(int j=0; j<n; j++) adjMatrix[i][i] = 0;
+        for(auto i: edges) {
+            adjMatrix[i[0]][i[1]] = i[2];
+            adjMatrix[i[1]][i[0]] = i[2];
         }
-
-        for(int i=0; i<n; i++) cost[i][i] = 0; // self node distance
 
         // floyd warshall algo:
-        for(int via=0; via<n; via++)
-        {
-            for(int i=0; i<n; i++)
-            {
-                for(int j=0; j<n; j++)
-                {
-                    if(cost[i][via] == INT_MAX || cost[via][j] == INT_MAX) continue;
-
-                    cost[i][j] = min(cost[i][j], cost[i][via] + cost[via][j]);
-                }
+        for(int via=0; via<n; via++) {
+            for(int i=0; i<n; i++) {
+                for(int j=0; j<n; j++) adjMatrix[i][j] = min(adjMatrix[i][j], adjMatrix[i][via] + adjMatrix[via][j]);
             }
         }
 
-        // till here we have shortest distance to reach b/w any two cities:
-        // we have to count for each city if cost does not exceed distanceThreashold:
-        int city = -1; // assuming city -1 to be the city with min city to reach with atmost cost of distanceThreshold
-        int minCityReachable = n + 1; // assuming max city reachable is n+1 initially
-
-        // checking for each city that to how many cities it can reach with atmost distanceThreshold cost:
-        for(int i=0; i<n; i++)
-        {
-            int countCity = 0;
-            for(int j=0; j<n; j++)
-            {
-                if(cost[i][j] <= distanceThreshold)
-                {
-                    countCity++;
-                }
+        int ans = -1; int leastCity = INT_MAX;
+        for(int i=0; i<n; i++) {
+            int count = 0;
+            for(int j=0; j<n; j++) {
+                if(i != j && adjMatrix[i][j] <= dt) count++;
             }
 
-            // as we have to find city with min city it could reach:
-            if(countCity <= minCityReachable)
-            {
-                minCityReachable = countCity;
-                city = i;
+            if(count <= leastCity) {
+                leastCity = count;
+                ans = i;
             }
         }
 
-        return city;
+        return ans;
     }
 };

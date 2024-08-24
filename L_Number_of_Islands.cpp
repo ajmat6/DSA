@@ -1,3 +1,4 @@
+// using bfs:
 class Solution {
 public:
     void createAdjList(unordered_map<int, list<int>>& adjList, unordered_map<int, bool>& isVisited, vector<vector<char>>& grid)
@@ -68,6 +69,47 @@ public:
                 {
                     ans++;
                     BFS(isVisited, grid, row, column);
+                }
+            }
+        }
+
+        return ans;
+    }
+};
+
+
+
+
+// using dfs:
+class Solution {
+public:
+    int dx[4] = {-1, 0, 1, 0};
+    int dy[4] = {0, 1, 0, -1};
+    void dfs(vector<vector<char>>& grid, int row, int col, vector<vector<int>>& vis) {
+        vis[row][col] = 1;
+        for(int i=0; i<4; i++) {
+            int newRow = row + dx[i];
+            int newCol = col + dy[i];
+
+            if(newRow >= 0 && newRow < grid.size() && newCol >= 0 && newCol < grid[0].size() && grid[newRow][newCol] == '1' && vis[newRow][newCol] == 0) {
+                vis[newRow][newCol] = 1;
+                dfs(grid, newRow, newCol, vis);
+            }
+        }
+    }
+
+    int numIslands(vector<vector<char>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+
+        vector<vector<int>> vis (rows, vector<int> (cols, 0));
+        int ans = 0;
+        for(int i=0; i<rows; i++) {
+            for(int j=0; j<cols; j++) {
+                if(grid[i][j] == '1' && vis[i][j] == 0) {
+                    ans += 1;
+                    vis[i][j] = 1;
+                    dfs(grid, i, j, vis);
                 }
             }
         }

@@ -1,27 +1,17 @@
 class Solution {
 public:
-    void solve(TreeNode* root, string s, int& ans)
-    {
-        if(root == NULL) return;
-        if(root -> left == NULL && root -> right == NULL)
-        {
-            string str = to_string(root -> val);
-            s += str;
-            ans = ans + stoi(s);
-            s.pop_back(); // backtrack
-            return;
+    int solve(TreeNode* root, string temp) {
+        if(root == NULL) return 0;
+        if(root -> left == NULL && root -> right == NULL) {
+            temp += root -> val + '0';
+            return stoi(temp);
         }
 
-        string str = to_string(root -> val);
-        s += str;
-        solve(root -> left, s, ans);
-        solve(root -> right, s, ans);
-        s.pop_back();
+        temp += root -> val + '0';
+        return solve(root -> left, temp) + solve(root -> right, temp);
     }
 
     int sumNumbers(TreeNode* root) {
-        int ans = 0;
-        solve(root, "", ans);
-        return ans;
+        return solve(root, "");
     }
 };

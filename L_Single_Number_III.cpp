@@ -1,6 +1,34 @@
 class Solution {
 public:
     vector<int> singleNumber(vector<int>& nums) {
+        // using sort: nlogn time and const space
+        // sort(nums.begin(), nums.end()); vector<int> ans;
+        // for(int i=0; i<nums.size(); i+=2) {
+        //     if(i != nums.size()-1 && nums[i] != nums[i + 1]) {
+        //         ans.push_back(nums[i]);
+        //         i--; // to increase only one
+        //     }
+        //     else if(i == nums.size()-1) ans.push_back(nums[i]);
+        // }
+        // if(ans.size() < 2) ans.push_back(nums[nums.size()-1]);
+        // return ans;
+
+
+
+        // using hashmap: n time  and n space
+        // unordered_map<int, int> mp;
+        // for(auto i: nums) mp[i]++;
+
+        // vector<int> ans;
+        // for(auto i: mp) {
+        //     if(i.second == 1) ans.push_back(i.first);
+        // }
+        // return ans;
+
+
+
+
+        // using bit manipulation: n time and const space
         int group1 = 0;
         int group2 = 0;
 
