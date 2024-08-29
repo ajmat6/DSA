@@ -304,8 +304,8 @@ int main() {
     Heap p;
     int nums[5] = {50, 70, 60, 30, 35};
     for(int i=0; i<5; i++) p.insert(nums[i]);
-    p.printHeapNodes();
-    p.deleteRootNode();
+    // p.printHeapNodes();
+    // p.deleteRootNode();
     p.printHeapNodes();
     return 0;
 }
