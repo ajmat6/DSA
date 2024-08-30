@@ -275,7 +275,6 @@ class Heap {
     }
     
     void deleteRootNode() {
-        // take root node to last node -> delete last node -> take first node to correct position:
         if(size == 0) return;
         arr[1] = arr[size];
         size--;
