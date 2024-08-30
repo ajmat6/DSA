@@ -263,7 +263,6 @@ class Heap {
         size += 1;
         int index = size;
         arr[index] = val;
-        // takeAtCorrPos(arr[index], index);
         while(index > 1) {
             int parentIndex = index / 2;
             if(arr[parentIndex] < arr[index]) {
