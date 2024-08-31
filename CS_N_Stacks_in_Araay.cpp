@@ -65,15 +65,10 @@ public:
     {
         //check for the underflow condition:
         if(top[m-1] == -1) return -1;
-
         int index = top[m-1];
-
         top[m-1] = next[index];
-
         next[index] = freespot;
-
         freespot = index;
-
         return arr[index];
     }
 };
