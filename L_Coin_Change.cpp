@@ -1,92 +1,73 @@
 class Solution {
 public:
-    // // Withour DP (Recursive) -> Gives TLE
-    // int solve(vector<int>& coins, int amount)
-    // {
-    //     if(amount == 0) return 0;
-    //     if(amount < 0) return INT_MAX;
+    // int dfs(vector<int>& coins, int amount, int index, vector<vector<int>>& dp) {
+    //     if(index == coins.size()) {
+    //         if(amount == 0) return 0;
+    //         return 1e9;
+    //     }
 
-    //     int mini = INT_MAX;
-    //     for(int i=0; i<coins.size(); i++)
-    //     {
-    //         int ans = solve(coins, amount - coins[i]);
+    //     if(dp[index][amount] != -1) return dp[index][amount];
 
-    //         if(ans != INT_MAX)
-    //         {
-    //             mini = min(mini, ans+1);
+    //     // at current index you can take 0, 1, 2.. till amount / coins is an integer:
+
+    //     // not Take:
+    //     int notTake = dfs(coins, amount, index + 1, dp);
+    //     int take = INT_MAX;
+    //     if(amount >= coins[index]) {
+    //         int maxTake = amount / coins[index];
+    //         for(int i=1; i<=maxTake; i++) {
+    //             take = min(take, i + dfs(coins, amount - (coins[index] * i), index + 1, dp));
     //         }
     //     }
 
-    //     return mini;
+    //     return dp[index][amount] = min(take, notTake);
     // }
 
-    // // With DP (Memorisation): TC = O(amount * no of coins), SC = O(amount)(recursive) + O(amount)(dp vector) -> Gives TLE
-    // int solve2(vector<int>& coins, int amount, vector<int>& dp)
-    // {
-    //     // Base Case:
-    //     if(amount == 0) return 0;
-    //     if(amount < 0) return INT_MAX;
+    int dfs(vector<int>& coins, int amount, vector<int>& dp) {
+        if(amount == 0) return 0;
+        if(amount < 0) return INT_MAX;
 
-    //     // Checking if the required min coin value is already present in dp vector:
-    //     if(dp[amount] != -1) return dp[amount];
+        if(dp[amount] != -1) return dp[amount];
 
-    //     // Recursive calling:
-    //     int mini = INT_MAX;
-    //     for(int i=0; i<coins.size(); i++)
-    //     {
-    //         int ans = solve(coins, amount - coins[i]);
-
-    //         if(ans != INT_MAX)
-    //         {
-    //             mini = min(mini, ans+1);
-    //         }
-    //     }
-
-    //     // Storing the ans in dp vector for memorisation:
-    //     dp[amount] = mini;
-
-    //     return dp[amount];
-    // }
-
-    // With DP (Tabulation): TC = O(amount * no of coins), SC = O(amount)(dp vector)
-    int solve3(vector<int>& coins, int amount)
-    {
-        // Create Tabulation dp vector:
-        vector<int> dp(amount+1, INT_MAX);
-
-        // Initialization:
-        dp[0] = 0;
-
-        // solve for each amount:
-        for(int i=1; i<=amount; i++)
-        {
-            // now for each amount you have to look up for each type of coin:
-            for(int j=0; j<coins.size(); j++)
-            {
-                // Tabulation logic:
-                if(i - coins[j] >= 0 && dp[i-coins[j]] != INT_MAX)
-                    dp[i] = min(dp[i], dp[i-coins[j]] + 1);
-            }
+        int ans = INT_MAX;
+        for(int i=0; i<coins.size(); i++) {
+            int dfsCall = dfs(coins, amount - coins[i], dp);
+            if(dfsCall != INT_MAX) ans = min(ans, 1 + dfsCall);
         }
 
-        return dp[amount];
+        return dp[amount] = ans;
+    }
+
+    int tabulation(vector<int>& coins, int money) {
+        vector<int> dp(money + 1, 0);
+        for(int amount=1; amount<=money; amount++) {
+            int ans = INT_MAX;
+            for(int i=0; i<coins.size(); i++) {
+                if(amount - coins[i] >= 0) {
+                    int dfsCall = dp[amount - coins[i]];
+                    if(dfsCall != INT_MAX) ans = min(ans, 1 + dfsCall);
+                }
+            }
+
+            dp[amount] = ans;
+        }
+        return dp[money];
     }
 
     int coinChange(vector<int>& coins, int amount) {
-        // Mehtod 1: Without DP
-        // int ans = solve(coins, amount);
-        // if(ans == INT_MAX) return -1;
-        // return ans;
+        // this has time of nlogn + n * amount * amount: very high but excepted
+        // sort(coins.begin(), coins.end());
+        // vector<vector<int>> dp (13, vector<int> (amount + 1, -1));
+        // int coinss = dfs(coins, amount, 0, dp);
+        // return coinss == 1e9 ? -1 : coinss;
 
-        // Method 2: With DP
-        // vector<int> dp(amount+1, -1);
-        // int ans = solve2(coins, amount, dp);
-        // if(ans == INT_MAX) return -1;
-        // return ans;
 
-        // Method 3: With DP(Tabulation)
-        int ans = solve3(coins, amount);
-        if(ans == INT_MAX) return -1;
-        return ans;
+        // vector<int> dp (amount + 1, -1);
+        // int ans = dfs(coins, amount, dp);
+        // return ans == INT_MAX ? -1 : ans;
+
+
+        int ans = tabulation(coins, amount);
+        return ans == INT_MAX ? -1 : ans;
     }
 };

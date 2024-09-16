@@ -1,40 +1,32 @@
 class Solution {
 public:
     void nextPermutation(vector<int>& nums) {
-        // find first dip index from the last:
         int index = -1;
-        for(int i=nums.size()-2; i>=0; i--)
-        {
-            if(nums[i] < nums[i+1])
-            {
+        int n = nums.size();
+        for(int i=n-2; i>=0; i--) {
+            if(nums[i] < nums[i + 1]) {
                 index = i;
                 break;
             }
         }
 
-        // if no dip is found like in case of 3, 2, 1, then reverse nums and done!
-        if(index == -1)
-        {
-            reverse(nums.begin(), nums.end());
+        if(index == -1) {
+            reverse(nums.begin(), nums.end()); 
             return;
         }
 
-        // else as we have to  return next lexicographically permutation, find minimun element to be replaced with index element from index + 1 to nums.size():
-        
-        sort(nums.begin() + index + 1, nums.end()); // sorting to make min no possible after finding index:
-
-        // finding just greater element than index element:
-        int minIndex = -1;
-        int minGreater = INT_MAX;
-        for(int i=index+1; i<nums.size(); i++)
-        {
-            if(nums[i] > nums[index] && nums[i] < minGreater)
-            {
-                minIndex = i;
-                minGreater = nums[i];
-            }
+        // find next strictly greater element than nums[index];
+        int nextGreater = INT_MAX;
+        int greaterIndex = -1;
+        for(int i=n-1; i>index; i--) {
+            if(nums[i] > nums[index]) {
+                // as from last till index the array was like 3, 2, 1  -> in decreasing order. So the first element that we will find greater than nums[index] is the next greater. Now you need to reverse it and done!
+                swap(nums[index], nums[i]);
+                reverse(nums.begin() + index + 1, nums.end()); 
+                break;
+            } 
         }
 
-        swap(nums[index], nums[minIndex]);
+        return;
     }
 };

@@ -1,18 +1,37 @@
 class Solution {
 public:
     int findContentChildren(vector<int>& g, vector<int>& s) {
-        sort(g.begin(), g.end());
-        sort(s.begin(), s.end());
+        // using sort and greedy: nlogn + mlogm + min(n, m) is time and const space:
+        // sort(g.begin(), g.end());
+        // sort(s.begin(), s.end());
 
-        int greed = 0;
-        int cook = 0;
+        // int count = 0;
+        // int left = 0; int right = 0;
+        // while(left < g.size() && right < s.size()) {
+        //     if(g[left] <= s[right]) {
+        //         count++;
+        //         left++;
+        //     }
+        //     right++;
+        // }
+        // return count;
 
-        while(greed < g.size() && cook < s.size())
-        {
-            if(s[cook] >= g[greed]) greed++;
-            cook++;
+
+
+        // using heap:
+        priority_queue<int, vector<int>, greater<int>> greed;
+        priority_queue<int, vector<int>, greater<int>> cook;
+        for(auto i: g) greed.push(i);
+        for(auto i: s) cook.push(i);
+
+        int ans = 0;
+        while(!greed.empty() && !cook.empty()) {
+            if(greed.top() <= cook.top()) {
+                ans += 1;
+                greed.pop();
+            }
+            cook.pop();
         }
-
-        return greed;
+        return ans;
     }
 };

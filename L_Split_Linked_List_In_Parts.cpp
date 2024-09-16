@@ -1,66 +1,42 @@
 class Solution {
 public:
     vector<ListNode*> splitListToParts(ListNode* head, int k) {
-        vector<ListNode*> ans;
-
-        // counting size of the LL:
-        int size = 0;
+        // traverse linked list
+        int totalNodes = 0;
         ListNode* temp = head;
-
-        while(temp != NULL)
-        {
-            size++;
+        while(temp != nullptr) {
+            totalNodes++;
             temp = temp -> next;
         }
 
-        // calculating size of each part and extra remainder:
-        int onePartSize = size / k;
-        int rem = size % k;
+        int quo = totalNodes / k;
+        int rem = totalNodes % k;
+        vector<ListNode*> ans;
 
-        // pointers to track each parted LL:
         temp = head;
-        ListNode* nextpointer = head;
-        int count = 0;
-
-        while(temp != NULL)
-        {
-            ListNode* tempHead = temp;
-            int times = onePartSize;
-
-            // if onepart size is greater than zero:
-            if(times != 0)
-            {
-                // taking temp to last node a split list:
-                while(times > 1)
-                {
-                    temp = temp -> next;
-                    times--;
-                }
-
-                // if there is some extra node in each list(if there is remainder):
-                if(rem > 0)
-                {
-                    temp = temp -> next;
-                    rem--;
-                }
+        for(int i=0; i<k; i++) {
+            int times = quo;
+            if(rem != 0) {
+                times += 1;
+                rem--;
             }
 
-            // this will work for both cases: when k is greater than size and vice versa:
-            nextpointer = temp -> next;
-            temp -> next = NULL;
-            temp = nextpointer;
-            ans.push_back(tempHead);
-            count++;
+            ListNode* prev = temp;
+            while(times != 1 && temp != nullptr) {
+                temp = temp -> next;
+                times -= 1;
+            }
+
+            ans.push_back(prev);
+            if(temp != nullptr) {
+                ListNode* nextt = temp -> next;
+                temp -> next = nullptr;
+                temp = nextt;
+            }
+            else break;
         }
 
-        // if k > size and no of parted lists are less than k:
-        if(count < k)
-        {
-            for(; count<k; count++)
-            {
-                ans.push_back(NULL);
-            }
-        }
+        while(ans.size() != k) ans.push_back(nullptr);
 
         return ans;
     }

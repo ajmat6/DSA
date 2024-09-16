@@ -174,6 +174,9 @@ Node* deleteFromBST(Node* root, int value)
         // if node to be deleted is a node in between:
         if(root -> left && root -> right)
         {
+            // inorder predecessor is max node in its left side
+            // inorder successor is min node in its right side
+
             // finding inorder successor:
             Node* temp = root -> right;
             Node* minNode = minValue(temp);

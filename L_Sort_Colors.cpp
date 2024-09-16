@@ -38,20 +38,19 @@ public:
 
         // using dutch flag algo (Three pointers): Most optimal and expected -> n time and const space (in place)
         int low = 0;
+        int mid = 0;
         int high = nums.size() - 1;
-        int index = 0;
-
-        while(index <= high) {
-            if(nums[index] == 0) {
-                swap(nums[index], nums[low]);
-                index++;
+        while(mid <= high) {
+            if(nums[mid] == 0) {
+                swap(nums[low], nums[mid]);
                 low++;
+                mid++;
             }
-            else if(nums[index] == 2) {
-                swap(nums[index], nums[high]);
+            else if(nums[mid] == 2) {
+                swap(nums[high], nums[mid]);
                 high--;
             }
-            else index++;
+            else mid++;
         }
     }
 };

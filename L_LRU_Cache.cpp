@@ -1,67 +1,135 @@
 class LRUCache {
-public:
-    unordered_map<int, int> mp; // for tracking no of keys in map
+    unordered_map<int, int> mp;
     unordered_map<int, int> trackTime;
-    set<pair<int, int>> trackOldest;
+    set<pair<int, int>> st;
     int size;
-    int currTime = 0;
-
+    int time;
+public:
     LRUCache(int capacity) {
         size = capacity;
+        time = 0;
     }
     
     int get(int key) {
-        // if key is found return its value and update its time of use:
-        if(mp.find(key) != mp.end())
-        {
-            int time = trackTime[key];
-            // deleting old usage time values of the key:
-            trackOldest.erase({time, key});
+        if(mp.count(key) == 0) return -1;
 
-            // increasing curr time and updating key values:
-            currTime++;
-            trackOldest.insert({currTime, key});
-            trackTime[key] = currTime;
-            return mp[key];
-        }
-
-        // if key is not found:
-        return -1;
+        // find the time of the key in set and delete it:
+        st.erase({trackTime[key], key});
+        trackTime[key] = time;
+        st.insert({time, key});
+        time++;
+        return mp[key];
     }
     
     void put(int key, int value) {
-        // if key exists then update its value and time:
-        if(mp.find(key) != mp.end())
-        {
-            // finding old usage time and updating its values
-            int time = trackTime[key];
-            trackOldest.erase({time, key});
-
-            currTime++;
-            trackOldest.insert({currTime, key});
+        // update if already there:
+        if(mp.count(key) != 0) {
+            st.erase({trackTime[key], key});
             mp[key] = value;
-            trackTime[key] = currTime;
+            trackTime[key] = time;
+            st.insert({time, key});
+            time++;
         }
 
-        // if key is not found: if size is full remove oldest used key and then add new one else add new one:
-        else
-        {
-            // if size if full, first find least used key and delete it:
-            if(mp.size() == size)
-            {
-                int leastUsedKey = trackOldest.begin() -> second;
-
-                // deleting least used key:
-                trackOldest.erase(trackOldest.begin());
-                mp.erase(leastUsedKey);
-                trackTime.erase(leastUsedKey);
+        // new key:
+        else {
+            if(size == 0) {
+                auto timeKey = *st.begin();
+                st.erase(st.begin());
+                mp.erase(timeKey.second); // second is key and first is time
+                trackTime.erase(timeKey.second);
+                size += 1;
             }
 
-            // add new key:
-            currTime++;
-            trackOldest.insert({currTime, key});
-            trackTime.insert({key, currTime});
-            mp.insert({key, value});
+            // insert:
+            mp[key] = value;
+            trackTime[key] = time;
+            st.insert({time, key});
+            size--;
+            time++;
         }
+    }
+};
+
+
+
+
+// using linked list:
+class Node {
+public:
+    int key;
+    int val;
+    Node* next;
+    Node* prev;
+
+    Node(int key, int val) {
+        this -> key = key;
+        this -> val = val;
+        next = nullptr;
+        prev = nullptr;
+    }
+};
+
+void deleteNode(Node* node) {
+    Node* prevNode = node -> prev;
+    Node* nextNode = node -> next;
+    prevNode -> next = nextNode;
+    nextNode -> prev = prevNode;
+}
+
+void insertAtHead(Node* node, Node* head) {
+    Node* headNext = head -> next;
+    node -> next = headNext;
+    node -> prev = head;
+    head -> next = node;
+    headNext -> prev = node;
+}
+
+class LRUCache {
+    Node* head;
+    Node* tail;
+    int size;
+    unordered_map<int, Node*> mp;
+public:
+    LRUCache(int capacity) {
+        size = capacity;
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
+        head -> next = tail;
+        tail -> prev = head;
+    }
+    
+    int get(int key) {
+        if(mp.count(key) == 0) return -1;
+        Node* node = mp[key];
+        mp.erase(key); // as there will new reference:
+        deleteNode(node);
+        insertAtHead(node, head);
+        mp[key] = head -> next;
+        return node -> val;
+    }
+    
+    void put(int key, int value) {
+        // if already there:
+        Node* node;
+        if(mp.count(key) != 0) {
+            node = mp[key];
+            node -> val = value;
+            mp.erase(key);
+            deleteNode(node);
+        }
+
+        else {
+            if(mp.size() == size) {
+                Node* temp = tail -> prev;
+                mp.erase(tail -> prev -> key);
+                deleteNode(tail -> prev);
+                delete temp;
+            }
+
+            node = new Node(key, value);
+        }
+        insertAtHead(node, head);
+        mp[key] = head -> next;
     }
 };

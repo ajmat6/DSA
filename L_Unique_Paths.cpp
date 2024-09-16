@@ -1,145 +1,54 @@
 class Solution {
 public:
-    int recursion(int m, int n, int row, int column)
-    {
-        if(row == m && column == n) return 1;
+    int memorisation(int n, int m, int row, int col, vector<vector<int>>& dp) {
+        if(row == n - 1 && col == m - 1) return 1;
+        if(dp[row][col] != -1) return dp[row][col];
 
-        // Right side:
-        int right = 0;
-        if(column + 1 <= n)
-        {
-            right = recursion(m, n, row, column+1);
-        }
-
-        // Down side:
-        int down = 0;
-        if(row + 1 <= m)
-        {
-            down = recursion(m, n, row+1, column);
-        }
-
-        int ans = right + down;
-        return ans;
+        int ans = 0;
+        if(col + 1 <= m - 1) ans += memorisation(n, m, row, col + 1, dp);
+        if(row + 1 <= n - 1) ans += memorisation(n, m, row + 1, col, dp);
+        return dp[row][col] = ans;
     }
 
-    int memo(int m, int n, int row, int column, vector<vector<int>>& dp)
-    {
-        if(row == m && column == n) return 1;
+    int tabulation(int n, int m) {
+        vector<vector<int>> dp (n + 1, vector<int> (m + 1, 0));
+        dp[n - 1][m - 1] = 1;
 
-        if(dp[row][column] != -1) return dp[row][column];
-
-        // Right side:
-        int right = 0;
-        if(column + 1 <= n)
-        {
-            right = memo(m, n, row, column+1, dp);
-        }
-
-        // Down side:
-        int down = 0;
-        if(row + 1 <= m)
-        {
-            down = memo(m, n, row+1, column, dp);
-        }
-
-        int ans = right + down;
-
-        // storing in dp:
-        dp[row][column] = ans;
-
-        return ans;
-    }
-
-    int tab(int m, int n)
-    {
-        vector<vector<int>> dp (m+1, vector<int> (n+1, 0));
-
-        // Handling base case:
-        dp[m][n] = 1;
-
-        for(int row=m; row>=1; row--)
-        {
-            for(int column=n; column>=1; column--)
-            {
-                // as we already handled the base case:
-                if(row == m && column == n) continue;
-
-                // Right side:
-                int right = 0;
-                if(column + 1 <= n)
-                {
-                    right = dp[row][column+1];
-                }
-
-                // Down side:
-                int down = 0;
-                if(row + 1 <= m)
-                {
-                    down = dp[row+1][column];
-                }
-
-                int ans = right + down;
-
-                // storing in dp:
-                dp[row][column] = ans;
+        for(int row=n-1; row>=0; row--) {
+            for(int col=m-1; col>=0; col--) {
+                if(row == n - 1 && col == m - 1) continue;
+                int ans = 0;
+                if(col + 1 <= m - 1) ans += dp[row][col + 1];
+                if(row + 1 <= n - 1) ans += dp[row + 1][col];
+                dp[row][col] = ans;
             }
         }
-
-        return dp[1][1];
+        return dp[0][0];
     }
 
-    int spaceOptimize(int m, int n)
-    {
-        vector<int> curr (n+1, 0);
-        vector<int> next (n+1, 0);
+    int spaceOptimisation(int n, int m) {
+        vector<int> curr (m + 1, 0);
+        vector<int> next (m + 1, 0);
+        curr[m - 1] = 1;
 
-        // Handling base case:
-        next[n] = 1;
-        curr[n] = 1;
-
-        for(int row=m; row>=1; row--)
-        {
-            for(int column=n; column>=1; column--)
-            {
-                if(row == m && column == n) continue;
-
-                // Right side:
-                int right = 0;
-                if(column + 1 <= n)
-                {
-                    right = curr[column+1];
-                }
-
-                // Down side:
-                int down = 0;
-                if(row + 1 <= m)
-                {
-                    down = next[column];
-                }
-
-                int ans = right + down;
-
-                // storing in dp:
-                curr[column] = ans;
+        for(int row=n-1; row>=0; row--) {
+            for(int col=m-1; col>=0; col--) {
+                if(row == n - 1 && col == m - 1) continue;
+                int ans = 0;
+                if(col + 1 <= m - 1) ans += curr[col + 1];
+                if(row + 1 <= n - 1) ans += next[col];
+                curr[col] = ans;
             }
-
             next = curr;
         }
-
-        return next[1];
+        return curr[0];
     }
 
     int uniquePaths(int m, int n) {
-        // return recursion(m, n, 1, 1);
+        vector<vector<int>> dp (m + 1, vector<int> (n + 1, -1));
+        return memorisation(m, n, 0, 0, dp);
 
-        // Memorisation:
-        // vector<vector<int>> dp (m+1, vector<int> (n+1, -1));
-        // return memo(m, n, 1, 1, dp);
-
-        // Tabulation:
-        // return tab(m, n);
-
-        // Space Optimisation:
-        return spaceOptimize(m, n);
+        // return tabulation(m, n);
+        return spaceOptimisation(m, n);
     }
 };
