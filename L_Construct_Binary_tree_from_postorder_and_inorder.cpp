@@ -1,34 +1,25 @@
 class Solution {
 public:
-    // searching index of the node in inorder traversal that appeared in preorder  traversal
-    void mapping(vector<int> in, int n, map<int, int>& mymap)
-    {
-        for(int i=0; i<n; i++)
-        {
-            mymap[in[i]] = i;
-        }
+    TreeNode* makeTree(vector<int>& inorder, vector<int>& postorder, int& currIndex, int inLow, int inHigh, unordered_map<int, int>& mp) {
+        if(currIndex < 0 || inLow > inHigh) return nullptr;
+
+        int currNodeValue = postorder[currIndex--];
+        TreeNode* newNode = new TreeNode(currNodeValue);
+        int index = mp[currNodeValue];
+
+        newNode -> right = makeTree(inorder, postorder, currIndex, index + 1, inHigh, mp);
+        newNode -> left = makeTree(inorder, postorder, currIndex, inLow, index - 1, mp);
+        return newNode;
     }
 
-    TreeNode* solve(vector<int>in, vector<int> post, int &index, int inorderStart, int inorderEnd, int n, map<int, int>& mymap)
-    {
-        if(index < 0 || inorderStart > inorderEnd) return NULL;
-
-        int element = post[index--];
-        TreeNode* temp = new TreeNode(element);
-
-        int position = mymap[element];
-
-        temp -> right = solve(in, post, index, position+1, inorderEnd, n, mymap);
-        temp -> left = solve(in, post, index, inorderStart, position-1, n, mymap);
-
-        return temp;
-    }
     TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-        int n = postorder.size();
-        int postOrderIndex = n-1;
-        map<int, int> mymap;
-        mapping(inorder, n, mymap);
-        TreeNode* ans = solve(inorder, postorder, postOrderIndex, 0, n-1, n, mymap);
-        return ans;
+        // mapping each value of inorder with its index:
+        unordered_map<int, int> mp;
+        int n = inorder.size();
+        for(int i=0; i<n; i++) mp[inorder[i]] = i;
+
+        // you can track current index in postorder by passing it as reference and only need to worry about inorder:
+        int currPostIndex = n - 1;
+        return makeTree(inorder, postorder, currPostIndex, 0, n - 1, mp);
     }
 };

@@ -1,43 +1,33 @@
-vector<int> leftView(Node *root)
-{
-   vector<int> ans;
-        
-        if(root == NULL) return ans;
-        
-        map<int, int> mymap; // first value is vertical distance and the second value is node's data
-        queue<pair<Node*, int>> q; // node and vertical distance
-        q.push(make_pair(root, 0)); // pushing root node into the queue
-        
-        while(!q.empty())
-        {
-            pair<Node* , int> p = q.front();
-            q.pop();
-            Node* temp = p.first;
-            int lvl = p.second;
-            
-            //checking if the value is present for lvl, if not then map it:
-            if(mymap.find(lvl) == mymap.end())
-            {
-                mymap[lvl] = temp -> data;
-            }
-            
-            // pushing left and right nodes of the tree if they are not null
-            if(temp -> left)
-            {
-                q.push(make_pair(temp -> left, lvl+1));
-            }
-            
-            if(temp -> right)
-            {
-                q.push(make_pair(temp -> right, lvl+1));
-            }
-        }
-        
-        // Pushing values into the ans vector:
-        for(auto i: mymap)
-        {
-            ans.push_back(i.second);
-        }
-        
-        return ans;
+void dfs(Node* root, vector<int>& ans, int level) {
+    if(ans.size() == level) ans.push_back(root -> data);
+    if(root -> left) dfs(root -> left, ans, level + 1);
+    if(root -> right) dfs(root -> right, ans, level + 1);
+    return;
+}
+
+vector<int> leftView(Node *root){
+    // bfs: n time and n extra space for queue:
+    // if(!root) return {};
+    // queue<Node*> q;
+    // q.push(root);
+    
+    // vector<int> ans;
+    // while(!q.empty()) {
+    //     int size = q.size();
+    //     ans.push_back(q.front() -> data);
+    //     for(int i=0; i<size; i++) {
+    //         Node* node = q.front();
+    //         q.pop();
+    //         if(node -> left) q.push(node -> left);
+    //         if(node -> right) q.push(node -> right);
+    //     }
+    // }
+    // return ans;
+    
+    
+    
+    // using dfs: n time and n space only for and vector and recursive stack space
+    vector<int> ans;
+    dfs(root, ans, 0);
+    return ans;
 }

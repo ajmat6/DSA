@@ -1,11 +1,3 @@
-/*
-    Your Trie object will be instantiated and called as such:
-    Trie* obj = new Trie();
-    obj->insert(word);
-    bool check2 = obj->search(word);
-    bool check3 = obj->startsWith(prefix);
- */
-
  struct Node
  {
      Node* links[26];
@@ -33,7 +25,7 @@
 
      void setEnd()
      {
-         flag = true;
+         flag = true;   
      }
 
     // to tell if current word has ended or not while searching:

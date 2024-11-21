@@ -1,21 +1,12 @@
-class Solution
-{
-    public:
-    bool isIdentical(Node *r1, Node *r2)
-    {
-        if(r1 == NULL && r2 == NULL) return true;
-        else if(r1 == NULL && r2 != NULL) return false;
-        else if(r1 != NULL && r2 == NULL) return false;
-        
-        else if(r1 -> data == r2 -> data)
-        {
-            bool left = isIdentical(r1 -> left, r2 -> left);
-            bool right = isIdentical(r1 -> right, r2 -> right);
-            
-            if(left && right) return true;
-            else return false;
-        }
-        
-        else return false;
+class Solution {
+public:
+    bool check(TreeNode* p, TreeNode* q) {
+        if((p && !q) || (!p && q)) return false;
+        if(!p && !q) return true;
+        if(p -> val == q -> val && check(p -> left, q -> left) && check(p -> right, q -> right)) return true;
+        return false;
+    }
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        return check(p, q);
     }
 };

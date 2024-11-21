@@ -1,82 +1,41 @@
-// TC = O(nlogn) where are total no of elements in the stram
-// SC = O(n) occupied by min heap and max heap
-
 class MedianFinder {
 public:
-    priority_queue<int> maxHeap;
-	priority_queue<int, vector<int>, greater<int>> minHeap;
-	double median = -1;
-
-    // function for comparing the size of the maxHeap and minHeap:
-    int signum(int a, int b)
-    {
-    	if(a == b) return 0;
-    	else if(a > b) return 1;
-    	else return -1;
-    }
-
+    priority_queue<int, vector<int>, greater<int>> mini; // second half of the array
+    priority_queue<int> maxi; // first half of the array
+    int size1, size2;
     MedianFinder() {
-        // no work of it
+        size1 = 0;
+        size2 = 0;
     }
     
-    // function for inserting the new stream element into the data and then finding the new median
     void addNum(int num) {
-        switch(signum(maxHeap.size(), minHeap.size()))
-	    {
-            // if both minHeap and maxHeap have equal size
-            case 0:
-                if(num > median)
-                {
-                    minHeap.push(num);
-                    median = minHeap.top();
-                }
+        if(size1 == 0 || num <= maxi.top()) {
+            maxi.push(num);
+            size1++;
+        }
+        else {
+            mini.push(num);
+            size2++;
+        }
 
-                else
-                {
-                    maxHeap.push(num);
-                    median = maxHeap.top();
-                }
-                break;
+        // check no of elements in them:
+        if(size1 - size2 > 1) {
+            mini.push(maxi.top());
+            size2++;
+            maxi.pop();
+            size1--;
+        }
 
-            // if maxHeap have greater size
-            case 1:
-                if(num > median)
-                {
-                    minHeap.push(num);
-                    median = (minHeap.top() + maxHeap.top()) / 2.0;
-                }
-
-                else
-                {
-                    minHeap.push(maxHeap.top());
-                    maxHeap.pop();
-
-                    maxHeap.push(num);
-                    median = (minHeap.top() + maxHeap.top()) / 2.0;
-                }
-                break;
-
-            // if minHeap have greater size
-            case -1:
-                if(num > median)
-                {
-                    maxHeap.push(minHeap.top());
-                    minHeap.pop();
-
-                    minHeap.push(num);
-                    median = (minHeap.top() + maxHeap.top()) / 2.0;
-                }
-
-                else
-                {
-                    maxHeap.push(num);
-                    median = (minHeap.top() + maxHeap.top()) / 2.0;
-                }
-                break;
-	    }
+        if(size2 > size1) {
+            maxi.push(mini.top());
+            size1++;
+            mini.pop();
+            size2--;
+        }
     }
     
     double findMedian() {
-        return median;
+        if(size1 == size2) return (mini.top() + maxi.top()) / 2.0;
+        return maxi.top();
     }
 };

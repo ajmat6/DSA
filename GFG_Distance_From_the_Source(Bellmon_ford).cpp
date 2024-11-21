@@ -1,40 +1,27 @@
-// TC = O(V * E) and SC = O(V) for distance array
 class Solution {
   public:
     vector<int> bellman_ford(int V, vector<vector<int>>& edges, int S) {
-        // distance array:
-        vector<int> dist (V, 1e8);
-        dist[S] = 0;
-        
-        // iteration over each V-1 times:
-        for(int i=0; i<V-1; i++)
-        {
-            for(auto i: edges)
-            {
-                int u = i[0];
-                int v = i[1];
-                int distance = i[2];
+        vector<int> dis(V, 1e8);
+        dis[S] = 0;
+        for(int i=0; i<V-1; i++) {
+            for(auto j: edges) {
+                int u = j[0];
+                int v = j[1];
+                int w = j[2];
                 
-                if(dist[u] + distance < dist[v])
-                {
-                    dist[v] = dist[u] + distance;
-                }
+                if(dis[u] != 1e8 && dis[u] + w < dis[v]) dis[v] = dis[u] + w;
             }
         }
         
-        // one more iteration for negative cycle detection:
-        for(auto i: edges)
-        {
-            int u = i[0];
-            int v = i[1];
-            int distance = i[2];
-            
-            if(dist[u] + distance < dist[v])
-            {
-                return {-1};
-            }
+        // again do one more iteration for the negative cycles:
+        for(auto j: edges) {
+            int u = j[0];
+            int v = j[1];
+            int w = j[2];
+                
+            if(dis[u] != 1e8 && dis[u] + w < dis[v]) return {-1};
         }
         
-        return dist;
+        return dis; // no negative cycle found
     }
 };

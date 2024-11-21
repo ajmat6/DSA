@@ -42,8 +42,11 @@ class Solution
 	        if(indegree[i] == 0) q.push(i);
 	    }
 	    
+		vector<int> ans;
 	    while(!q.empty()) {
 	        int node = q.front();
+			q.pop();
+			
 	        ans.push_back(node);
 	        
 	        for(auto i: adj[node]) {

@@ -1,59 +1,84 @@
 class Solution {
 public:
+    int findHeight(TreeNode* root) {
+        int left = 0;
+        int right = 0;
+        if(root -> left) left = 1 + findHeight(root -> left);
+        if(root -> right) right = 1 + findHeight(root -> right);
+        return max(left, right);
+    }
+
+    void dfs(TreeNode* root, int depth, vector<vector<int>>& ans) {
+        ans[depth].push_back(root -> val);
+        if(root -> left) dfs(root -> left, depth + 1, ans);
+        if(root -> right) dfs(root -> right, depth + 1, ans);
+        return;
+    }
+
     vector<vector<int>> levelOrderBottom(TreeNode* root) {
-        vector<vector<int>> ans;
-        if(root == NULL) return ans;
+        // vector<vector<int>> ans;
+        // queue<TreeNode*> q;
 
-        queue<TreeNode*> q;
-        stack<vector<int>> s;
+        // if(root == NULL) return ans;
+        // q.push(root);
+        // while(!q.empty()) {
+        //     vector<int> temp;
+        //     int n = q.size();
 
-        q.push(root);
-        q.push(NULL);
-        s.push({root -> val});
+        //     while(n--) {
+        //         TreeNode* tempo = q.front();
+        //         q.pop();
 
-        vector<int> temp;
-        while(!q.empty())
-        {
-            TreeNode* frontNode = q.front();
-            q.pop();
+        //         temp.push_back(tempo -> val);
+        //         if(tempo -> left) q.push(tempo -> left);
+        //         if(tempo -> right) q.push(tempo -> right);
+        //     }
 
-            if(frontNode == NULL)
-            {
-                s.push(temp);
-                temp.clear();
+        //     ans.push_back(temp);
+        // }
 
-                if(!q.empty())
-                {
-                    q.push(NULL);
-                }
-            }
+        // reverse(ans.begin(), ans.end());
+        // return ans;
 
-            else
-            {
-                if(frontNode -> left)
-                {
-                    q.push(frontNode -> left);
-                    temp.push_back(frontNode -> left -> val);
-                }
 
-                if(frontNode -> right)
-                {
-                    q.push(frontNode -> right);
-                    temp.push_back(frontNode -> right -> val);
-                }
-            }
-        }
 
-        // last NULL pointer giving empty vector entry in the stack, so remove it:
-        s.pop();
+        // using stack:
+        // queue<TreeNode*> q;
+        // stack<vector<int>> st;
 
-        // creating ans vector from the stack:
-        while(!s.empty())
-        {
-            ans.push_back(s.top());
-            s.pop();
-        }
+        // if(root == NULL) return {};
+        // q.push(root);
+        // while(!q.empty()) {
+        //     vector<int> temp;
+        //     int n = q.size();
 
+        //     while(n--) {
+        //         TreeNode* tempo = q.front();
+        //         q.pop();
+
+        //         temp.push_back(tempo -> val);
+        //         if(tempo -> left) q.push(tempo -> left);
+        //         if(tempo -> right) q.push(tempo -> right);
+        //     }
+
+        //     st.push(temp);
+        // }
+
+        // vector<vector<int>> ans;
+        // while(!st.empty()) {
+        //     ans.push_back(st.top());
+        //     st.pop();
+        // }
+        // return ans;
+
+
+
+        // level order traversal using dfs:
+        if(root == nullptr) return {};
+        int totalHeight = findHeight(root) + 1;
+        vector<vector<int>> ans (totalHeight);
+        dfs(root, 0, ans);
+        reverse(ans.begin(), ans.end());
         return ans;
     }
 };

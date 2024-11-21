@@ -103,7 +103,7 @@ class Trie{
 
             // else return 0:  no words
             else return 0;
-        }
+        }   
 
         return node -> getWords();
     }

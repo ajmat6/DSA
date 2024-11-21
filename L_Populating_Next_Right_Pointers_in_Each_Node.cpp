@@ -1,27 +1,40 @@
 class Solution {
 public:
-    void solve(Node* root)
-    {
-        if(root == NULL) return;
+    void dfs(Node* root) {
+        if(root -> left == nullptr && root -> right == nullptr) return;
 
-        if(root -> left && root -> right)
-        {
-            // pointing left node to its next pointer:
-            root -> left -> next = root -> right;
+        root -> left -> next = root -> right;
+        if(root -> next != nullptr) root -> right -> next = root -> next -> left;
 
-            // pointing right node to its next pointer:
-            if(root -> next != NULL)
-            {
-                root -> right -> next = root -> next -> left;
-            }
-        }
-
-        solve(root -> left);
-        solve(root -> right);
+        dfs(root -> left);
+        dfs(root -> right);
     }
 
     Node* connect(Node* root) {
-        solve(root);
+        // using level order traversal: n time and n space for queue:
+        // if(!root) return root;
+        // queue<Node*> q;
+        // q.push(root);
+
+        // while(!q.empty()) {
+        //     int size = q.size();
+        //     for(int i=1; i<=size; i++) {
+        //         Node* node = q.front();
+        //         q.pop();
+        //         if(i == size) node -> next = nullptr;
+        //         else node -> next = q.front();
+
+        //         if(node -> left) q.push(node -> left);
+        //         if(node -> right) q.push(node -> right);
+        //     }
+        // }
+        // return root;
+
+
+        // using dfs:
+        if(root == nullptr) return nullptr;
+        root -> next = nullptr;
+        dfs(root);
         return root;
     }
 };

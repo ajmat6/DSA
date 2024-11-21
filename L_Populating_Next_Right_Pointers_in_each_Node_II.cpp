@@ -1,53 +1,52 @@
 class Solution {
 public:
-    Node* connect(Node* root) {
-        if(root == NULL) return root;
-        
-        queue<Node*> q;
-        vector<Node*> temp;
-        q.push(root);
-        q.push(NULL);
+    Node* findNextNode(Node* root) {
+        if(root == nullptr) return nullptr;
+        if(root -> left) return root -> left;
+        if(root -> right) return root -> right;
+        return findNextNode(root -> next);
+    }
 
-        // Level Order Traversal:
-        while(!q.empty())
-        {
-            Node* frontNode = q.front();
-            q.pop();
+    void dfs(Node* root) {
+        if(root == nullptr) return;
+        if(root -> left == nullptr && root -> right == nullptr) return;
 
-            if(frontNode == NULL)
-            {
-                int size = temp.size();
-                for(int i=0; i<size-1; i++)
-                {
-                    temp[i] -> next = temp[i+1];
-                }
-
-                temp.clear();
-
-                // for next level:
-                if(!q.empty())
-                {
-                    q.push(NULL);
-                }
-            }
-
-            // check if left and right node exist. If exist insert them into the queue:
-            else
-            {
-                if(frontNode -> left)
-                {
-                    q.push(frontNode -> left);
-                    temp.push_back(frontNode -> left);
-                }
-
-                if(frontNode -> right)
-                {
-                    q.push(frontNode -> right);
-                    temp.push_back(frontNode -> right);
-                }
-            }
+        Node* nextNode = findNextNode(root -> next);
+        if(root -> left) {
+            if(root -> right) root -> left -> next = root -> right;
+            else root -> left -> next = nextNode;
         }
 
+        if(root -> right) root -> right -> next = nextNode;
+
+        // do right traversal first so that you can find nextNode available:
+        dfs(root -> right);
+        dfs(root -> left);
+    }
+
+    Node* connect(Node* root) {
+        // using level order traversal: n time and n space for queue:
+        // if(!root) return root;
+        // queue<Node*> q;
+        // q.push(root);
+
+        // while(!q.empty()) {
+        //     int size = q.size();
+        //     for(int i=1; i<=size; i++) {
+        //         Node* node = q.front();
+        //         q.pop();
+        //         if(i == size) node -> next = nullptr;
+        //         else node -> next = q.front();
+
+        //         if(node -> left) q.push(node -> left);
+        //         if(node -> right) q.push(node -> right);
+        //     }
+        // }
+        // return root;
+
+
+        // using dfs: n time and const space except recursive stack space which is height of tree:
+        dfs(root);
         return root;
     }
 };

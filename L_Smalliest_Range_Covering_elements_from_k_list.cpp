@@ -1,82 +1,103 @@
+// tc is klogk + nlogk where n are total elements and sc is k for priority_queue
+class Node {
+    public: 
+        int val, row, col;
+        Node(int data, int x, int y) {
+            val = data;
+            row = x;
+            col = y;
+        }
+};
+
+class cmp {
+    public:
+    bool operator()(Node* a, Node* b) {
+        return a -> val > b -> val;
+    }
+};
+
 class Solution {
 public:
-    class Node
-    {
-        public:
-            int data;
-            int row;
-            int col;
-
-            Node(int data, int row, int col)
-            {
-                this -> data = data;
-                this -> row = row;
-                this -> col = col;
-            }
-    };
-
-    class HeapGreater
-    {
-        public:
-            bool operator()(Node* a, Node* b)
-            {
-                return a -> data > b -> data;
-            }
-    };
-
     vector<int> smallestRange(vector<vector<int>>& nums) {
-        priority_queue<Node*, vector<Node*>, HeapGreater> q; // Min Heap
         int mini = INT_MAX;
         int maxi = INT_MIN;
+        int n = nums.size();
+        priority_queue<Node*, vector<Node*>, cmp> pq;
 
-        // storing each LL first values into the Min Heap and finding the temporary min and max element:
-        for(int i=0; i<nums.size(); i++)
-        {
-            int element = nums[i][0];
-            mini =  min(mini, element);
-            maxi = max(maxi, element);
-            Node* temp = new Node(element, i, 0);
-            q.push(temp);
-        }    
+        for(int i=0; i<n; i++) {
+            mini = min(mini, nums[i][0]);
+            maxi = max(maxi, nums[i][0]);
+            Node* newNode = new Node(nums[i][0], i, 0);
+            pq.push(newNode);
+        }
 
-        // Making Permanent Max and Min element:
-        int RangeStart = mini;
-        int RangeEnd = maxi;
+        int ansStart = mini;
+        int ansEnd = maxi;
+        while(!pq.empty()) {
+            Node* node = pq.top();
+            pq.pop();
 
-        // popping the min element(top element) from the Heap and updating Min and Max:
-        while(!q.empty())
-        {
-            Node* temp = q.top();
-            q.pop();
+            int start = node -> val;
+            int end = maxi;
 
-            mini = temp -> data;
-
-            int tempRange = maxi - mini;
-            int PermRange = RangeEnd - RangeStart;
-
-            if(tempRange < PermRange)
-            {
-                RangeStart = mini;
-                RangeEnd = maxi;
+            if(end - start < ansEnd - ansStart) {
+                ansStart = start;
+                ansEnd = end;
             }
 
-            // pushing next element of the LL into the heap if it exists
-            if(temp -> col+1 < nums[temp -> row].size())
-            {
-                maxi = max(maxi, nums[temp -> row][temp -> col+1]);
-                Node* NewNode = new Node(nums[temp -> row][temp -> col+1], temp -> row, temp -> col+1);
-                q.push(NewNode);
-            }
+            if(node -> col + 1 < nums[node -> row].size()) {
+                maxi = max(maxi, nums[node -> row][node -> col + 1]);
+                Node* newNode = new Node(nums[node -> row][node -> col + 1], node -> row, node -> col + 1);
 
-            // Otherwise terminate the loop
+                pq.push(newNode);
+            }
             else break;
         }
 
-        // Creating ans vector and pushing the range values and returning it:
-        vector<int> ans;
-        ans.push_back(RangeStart);
-        ans.push_back(RangeEnd);
+        return {ansStart, ansEnd};
+    }
+};
 
-        return ans;
+
+
+
+
+
+
+// sc is n + k and tc is nlogn + 2n
+class Solution {
+public:
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+        int n = nums.size();
+        vector<pair<int, int>> temp;
+        for(int i=0; i<n; i++) {
+            for(auto j: nums[i]) temp.push_back({j, i});
+        }
+
+        int low = 0, high = 0;
+        int minRange = INT_MAX;
+        int ansStart = -1, ansEnd = -1;
+        unordered_map<int, int> mp;
+        sort(temp.begin(), temp.end());
+
+        while(high < temp.size()) {
+            mp[temp[high].second]++;
+
+            while(mp.size() == n) {
+                int currRange = temp[high].first - temp[low].first;
+                if(currRange < minRange) {
+                    minRange = currRange;
+                    ansStart = temp[low].first;
+                    ansEnd = temp[high].first;
+                }
+                mp[temp[low].second]--;
+                if(mp[temp[low].second] == 0) mp.erase(temp[low].second);
+                low++;
+            }
+
+            high++;
+        }
+
+        return {ansStart, ansEnd};
     }
 };

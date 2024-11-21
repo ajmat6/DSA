@@ -1,42 +1,41 @@
 class Solution {
 public:
     int minimumMountainRemovals(vector<int>& nums) {
-        vector<int> dp1(nums.size(), 1);
-        vector<int> dp2(nums.size(), 1);
-
-        // to find longest incresing subsequnce from left side:
-        for(int curr=0; curr<nums.size(); curr++)
-        {
-            for(int prev=0; prev<curr; prev++)
-            {
-                if(nums[curr] > nums[prev] && 1 + dp1[prev] > dp1[curr])
-                {
-                    dp1[curr] = 1 + dp1[prev];
-                }
+        int n = nums.size();
+        vector<int> prefix (n), suffix (n), temp;
+        temp.push_back(nums[0]); prefix[0] = 1;
+        for(int i=1; i<n; i++) {
+            if(nums[i] > temp.back()) {
+                temp.push_back(nums[i]);
+                prefix[i] = temp.size();
+            }
+            else {
+                int index = lower_bound(temp.begin(), temp.end(), nums[i]) - temp.begin();
+                temp[index] = nums[i];
+                prefix[i] = index + 1;
             }
         }
 
-        // to find longest incresing subsequnce from right side:
-        for(int curr=nums.size()-1; curr>=0; curr--)
-        {
-            for(int prev=nums.size()-1; prev>curr; prev--)
-            {
-                if(nums[curr] > nums[prev] && 1 + dp2[prev] > dp2[curr])
-                {
-                    dp2[curr] = 1 + dp2[prev];
-                }
+        temp.clear();
+        temp.push_back(nums[n - 1]);
+        suffix[n - 1] = 1;
+        for(int i=n-2; i>=0; i--) {
+            if(nums[i] > temp.back()) {
+                temp.push_back(nums[i]);
+                suffix[i] = temp.size();
+            }
+            else {
+                int index = lower_bound(temp.begin(), temp.end(), nums[i]) - temp.begin();
+                temp[index] = nums[i];
+                suffix[i] = index + 1;
             }
         }
 
-        // finding mountain array elements for each index:
-        int maxiElementsMountain = INT_MIN;
-        for(int i=0; i<nums.size(); i++)
-        {
-            if(dp1[i] == 1 || dp2[i] == 1) continue; // as it is not adding to the mountain formation:
-            int temp = dp1[i] + dp2[i] - 1;
-            maxiElementsMountain = max(maxiElementsMountain, temp);
+        int ans = INT_MAX;
+        for(int i=0; i<n; i++) {
+            if(prefix[i] == 1 || suffix[i] == 1) continue;
+            ans = min(ans, n - (prefix[i] + suffix[i] - 1));
         }
-
-        return nums.size() - maxiElementsMountain;
+        return ans;
     }
 };

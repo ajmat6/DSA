@@ -1,7 +1,6 @@
 class Solution {
 public:
     int maximalNetworkRank(int n, vector<vector<int>>& roads) {
-        // creating adjacency list:
         unordered_map<int, list<int>> adjList;
         set<pair<int, int>> st;
 
@@ -20,10 +19,6 @@ public:
             for(int j=i+1; j<n; j++)
             {
                 int temp = adjList[i].size() + adjList[j].size();
-                // for(auto k: adjList[i])
-                // {
-                //     if(k == j) temp -= 1;
-                // }
 
                 if(st.find({i, j}) != st.end() || st.find({j, i}) !=  st.end())
                 {

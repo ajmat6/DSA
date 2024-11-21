@@ -1,135 +1,111 @@
+// using hashmaps: logn time for each
 class LRUCache {
-    unordered_map<int, int> mp;
-    unordered_map<int, int> trackTime;
-    set<pair<int, int>> st;
-    int size;
-    int time;
+private: unordered_map<int, int> keyValue;
+         unordered_map<int, int> keyTimer;
+         map<int, int> timerKey;
+         int size;
+         int timer;
 public:
     LRUCache(int capacity) {
         size = capacity;
-        time = 0;
+        timer = 0;
     }
     
     int get(int key) {
-        if(mp.count(key) == 0) return -1;
+        if(keyValue.count(key) == 0) return -1;
 
-        // find the time of the key in set and delete it:
-        st.erase({trackTime[key], key});
-        trackTime[key] = time;
-        st.insert({time, key});
-        time++;
-        return mp[key];
+        int prevTime = keyTimer[key];
+        timerKey.erase(prevTime);
+
+        keyTimer[key] = timer;
+        timerKey[timer] = key;
+        timer++;
+
+        return keyValue[key];
     }
     
     void put(int key, int value) {
-        // update if already there:
-        if(mp.count(key) != 0) {
-            st.erase({trackTime[key], key});
-            mp[key] = value;
-            trackTime[key] = time;
-            st.insert({time, key});
-            time++;
+        if(keyValue.count(key) != 0) {
+            int prevTime = keyTimer[key];
+            timerKey.erase(prevTime);
         }
-
-        // new key:
+        else if(size != 0) size--;
         else {
-            if(size == 0) {
-                auto timeKey = *st.begin();
-                st.erase(st.begin());
-                mp.erase(timeKey.second); // second is key and first is time
-                trackTime.erase(timeKey.second);
-                size += 1;
-            }
-
-            // insert:
-            mp[key] = value;
-            trackTime[key] = time;
-            st.insert({time, key});
-            size--;
-            time++;
+            int lruKey = timerKey.begin() -> second;
+            int lruTime = timerKey.begin() -> first;
+            timerKey.erase(lruTime);
+            keyValue.erase(lruKey);
+            keyTimer.erase(lruKey);
         }
+        
+        keyValue[key] = value;
+        keyTimer[key] = timer;
+        timerKey[timer] = key;
+        timer++;
     }
 };
 
 
 
 
-// using linked list:
+
+// using doubly linked list: O(1) time for each case:
 class Node {
 public:
     int key;
-    int val;
+    int value;
     Node* next;
     Node* prev;
-
-    Node(int key, int val) {
-        this -> key = key;
-        this -> val = val;
-        next = nullptr;
-        prev = nullptr;
-    }
+    Node(int key, int val): key(key), value(val), next(nullptr), prev(nullptr) {}
 };
 
-void deleteNode(Node* node) {
-    Node* prevNode = node -> prev;
-    Node* nextNode = node -> next;
-    prevNode -> next = nextNode;
-    nextNode -> prev = prevNode;
-}
-
-void insertAtHead(Node* node, Node* head) {
-    Node* headNext = head -> next;
-    node -> next = headNext;
-    node -> prev = head;
-    head -> next = node;
-    headNext -> prev = node;
-}
-
 class LRUCache {
-    Node* head;
-    Node* tail;
-    int size;
-    unordered_map<int, Node*> mp;
+private: unordered_map<int, Node*> mp;
+         Node* head;
+         Node* tail;
+         int size;
 public:
     LRUCache(int capacity) {
-        size = capacity;
         head = new Node(-1, -1);
         tail = new Node(-1, -1);
         head -> next = tail;
         tail -> prev = head;
+        size = capacity;
+    }
+
+    // new node inserted at tail:
+    void insertNode(int key, int val) {
+        Node* newNode = new Node(key, val);
+        tail -> prev -> next = newNode;
+        newNode -> prev = tail -> prev;
+        newNode -> next = tail;
+        tail -> prev = newNode;
+        mp[key] = newNode;
+    }
+
+    // deletion of node in DLL and in hashmap:
+    void deleteNode(Node* node) {
+        mp.erase(node -> key);
+        node -> prev -> next = node -> next;
+        node -> next -> prev = node -> prev;
+        node -> next = nullptr;
+        node -> prev = nullptr;
+        delete node;
     }
     
     int get(int key) {
         if(mp.count(key) == 0) return -1;
-        Node* node = mp[key];
-        mp.erase(key); // as there will new reference:
-        deleteNode(node);
-        insertAtHead(node, head);
-        mp[key] = head -> next;
-        return node -> val;
+
+        int val = mp[key] -> value;
+        deleteNode(mp[key]);
+        insertNode(key, val);
+        return val;
     }
     
     void put(int key, int value) {
-        // if already there:
-        Node* node;
-        if(mp.count(key) != 0) {
-            node = mp[key];
-            node -> val = value;
-            mp.erase(key);
-            deleteNode(node);
-        }
-
-        else {
-            if(mp.size() == size) {
-                Node* temp = tail -> prev;
-                mp.erase(tail -> prev -> key);
-                deleteNode(tail -> prev);
-                delete temp;
-            }
-
-            node = new Node(key, value);
-        }
-        insertAtHead(node, head);
-        mp[key] = head -> next;
+        if(mp.count(key) != 0) deleteNode(mp[key]);
+        else if(size != 0) size--;
+        else deleteNode(head -> next);
+        insertNode(key, value);
     }
 };

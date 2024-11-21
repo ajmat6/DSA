@@ -1,33 +1,26 @@
 class Solution {
 public:
-    void DFS(int row, int column, int inColor, int colour, vector<vector<int>>& image, vector<vector<int>>& image2)
-    {
-        image2[row][column] = colour; // changing present row and column block with new colour
+    int dx[4] = {-1, 0, 1, 0};
+    int dy[4] = {0, 1, 0, -1};
+    void dfs(vector<vector<int>>& image, int row, int col, int color, int initial) {
+        for(int i=0; i<4; i++) {
+            int newRow = row + dx[i];
+            int newCol = col + dy[i];
 
-        for(int newRow=-1; newRow<=1; newRow++)
-        {
-            for(int newCol=-1; newCol<=1; newCol++)
-            {
-                if(abs(newRow) + abs(newCol) == 2) continue;
-                if(newRow == newCol) continue;
-
-                int nowRow = newRow + row;
-                int nowCol = newCol + column;
-
-                // checking condition for further DFS call:
-                if(nowRow >= 0  && nowRow < image.size() && nowCol >= 0 && nowCol < image[0].size() && image[nowRow][nowCol] == inColor && image2[nowRow][nowCol] != colour)
-                {
-                    DFS(nowRow, nowCol, inColor, colour, image, image2);
-                }
+            if(newRow >= 0 && newRow < image.size() && newCol >= 0 && newCol < image[0].size() && image[newRow][newCol] == initial) {
+                image[newRow][newCol] = color;
+                dfs(image, newRow, newCol, color, initial);
             }
         }
+        return;
     }
 
     vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
-        int inColor = image[sr][sc]; 
+        if(image[sr][sc] == color) return image; 
         
-        vector<vector<int>> image2 = image;
-        DFS(sr, sc, inColor, color, image, image2);
-        return image2;
+        int initial = image[sr][sc];
+        image[sr][sc] = color;
+        dfs(image, sr, sc, color, initial);
+        return image;
     }
 };

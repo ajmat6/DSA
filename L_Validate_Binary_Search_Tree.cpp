@@ -1,21 +1,12 @@
 class Solution {
 public:
-    bool isBST(TreeNode* root, long x, long y)
-    {
-        if(root == NULL) return true;
-
-        if(root -> val > x && root -> val < y)
-        {
-            bool left = isBST(root -> left, x, root -> val);
-            bool right = isBST(root -> right, root -> val, y);
-
-            if(left && right) return true;
-        }
-
-        return false;
+    bool check(TreeNode* root, long long low, long long high) {
+        if(root == nullptr) return true;
+        if(root -> val <= low || root -> val >= high) return false;
+        return check(root -> left, low, root -> val) && check(root -> right, root -> val, high);
     }
 
     bool isValidBST(TreeNode* root) {
-        return isBST(root, LONG_MIN, LONG_MAX);
+        return check(root, LONG_MIN, LONG_MAX);
     }
 };

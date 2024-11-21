@@ -1,35 +1,27 @@
+#define ll long long
 class Solution {
 public:
+    const ll mod = 1e10;
     int widthOfBinaryTree(TreeNode* root) {
-        if(root == NULL) return 0;
+        queue<pair<TreeNode*, ll>> q;
+        q.push({root, 0});
 
-        int ans = 0;
-        queue<pair<TreeNode*, long long>> q;
-        q.push({root, 1});
-
-        int count = 0;
-        while(!q.empty())
-        {
+        ll ans = 0;
+        while(!q.empty()) {
             int size = q.size();
+            ll firstIndex = q.front().second;
+            ll lastIndex = q.back().second;
+            ans = max(ans, lastIndex - firstIndex + 1);
 
-            int index1 = q.front().second;
-            int index2 = q.back().second;
-            int diff = index2 - index1 + 1;
-
-            ans = max(ans, diff);
-
-            for(int i=0; i<size; i++)
-            {
-                TreeNode* frontNode = q.front().first;
-                int index = q.front().second;
+            for(int i=1; i<=size; i++) {
+                TreeNode* node = q.front().first;
+                ll index = q.front().second;
                 q.pop();
 
-                if(frontNode -> left) q.push({frontNode -> left, 2 * 1LL * index + 1});
-                if(frontNode ->  right) q.push({frontNode -> right, 2 * 1LL * index + 2});
+                if(node -> left) q.push({node -> left, (2 * index + 1) % mod});
+                if(node -> right) q.push({node -> right, (2 * index + 2) % mod});
             }
-
         }
-
         return ans;
     }
 };

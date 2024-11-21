@@ -1,38 +1,38 @@
+// SC is ((V + 2E) + V + V + V + E + V) or(adjList, disc, low, vis, ans, recur stack space):
+// TC is V + 2E
 class Solution {
 public:
-    void solve(int n, unordered_map<int, vector<int>>& adjList, int& timer, int node, int parent, vector<vector<int>>& ans, vector<int>& disc, vector<int>& low, vector<int>& vis) {
-        vis[node] = 1;
+    void dfs(int node, int parent, unordered_map<int, vector<int>>& adjList, int& timer, vector<int>& disc, vector<int>& low, vector<int>& vis, vector<vector<int>>& ans) {
         disc[node] = timer;
         low[node] = timer;
+        vis[node] = 1;
 
         for(auto i: adjList[node]) {
-            if(vis[i] == 0) {
+            if(i == parent) continue;
+            if(!vis[i]) {
                 timer++;
-                solve(n, adjList, timer, i, node, ans, disc, low, vis);
+                dfs(i, node, adjList, timer, disc, low, vis, ans);
             }
-            if(i != parent && low[i] < low[node]) low[node] = low[i];
-            if(low[i] > disc[node]) {
-                ans.push_back({i, node});
-            }
+            low[node] = min(low[node], low[i]);
+            if(low[i] > disc[node]) ans.push_back({node, i});
         }
-
         return;
     }
 
-    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& conn) {
         unordered_map<int, vector<int>> adjList;
-        for(auto i: connections) {
+        for(auto i: conn) {
             adjList[i[0]].push_back(i[1]);
             adjList[i[1]].push_back(i[0]);
         }
 
-        vector<int> disc (n, -1);
-        vector<int> low (n, -1);
-        vector<int> vis (n, 0);
-
         int timer = 0;
+        vector<int> low(n);
+        vector<int> vis(n);
+        vector<int> disc(n);
         vector<vector<int>> ans;
-        solve(n, adjList, timer, 0, -1, ans, disc, low, vis);
+
+        dfs(0, -1, adjList, timer, disc, low, vis, ans);
         return ans;
     }
-223waqqq1
+};

@@ -1,25 +1,27 @@
 class Solution {
 public:
+    TreeNode* find(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root == nullptr) return root;
+        if(root == p || root == q) return root;
+        if((p -> val < root -> val && q -> val > root -> val) || (p -> val > root -> val && q -> val < root -> val)) return root;
+        if(p -> val < root -> val) return find(root -> left, p, q);
+        return find(root -> right, p, q);
+    }
+
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        // Base Case:
-        if(root == NULL)
-        {
-            return NULL;
-        }
+        // return find(root, p, q); n time and h recursive space:
 
-        // if both p and q are on left side then their LCA is on the left side
-        if(root -> val > p -> val && root -> val > q -> val)
-        {
-            return lowestCommonAncestor(root -> left, p, q);
-        }
 
-        // if both p and q are on right side then their LCA is on the right side
-        if(root -> val < p -> val && root -> val < q -> val)
-        {
-            return lowestCommonAncestor(root -> right, p, q);
-        }
 
-        // if both p and q are on different sides , then root is their common ancestor
-        return root;
+        // iterative:
+        TreeNode* temp = root;
+        while(temp) {
+            if(temp == p || temp == q) return temp;
+            if((p -> val < temp -> val && q -> val > temp -> val) || (p -> val > temp -> val && q -> val < temp -> val)) return temp;
+
+            if(p -> val < temp -> val) temp = temp -> left;
+            else temp = temp -> right;
+        }
+        return nullptr;
     }
 };
