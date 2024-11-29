@@ -20,7 +20,8 @@
         "utility": "cpp",
         "xlocale": "cpp",
         "iterator": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "map": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
