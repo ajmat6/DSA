@@ -1,58 +1,56 @@
 class Solution {
 public:
-    int checkUnique(string& s, int low, int high)
-    {
+    int countPalindromicSubsequence(string s) {
         int count = 0;
-        unordered_set<char> st;
-        for(int i=low + 1; i<high; i++)
-        {
-            if(st.find(s[i]) == st.end())
-            {
-                st.insert(s[i]);
-                count++;
+        for(int i=0; i<26; i++) {
+            int first = -1, last = -1;
+            for(int j=0; j<s.size(); j++) {
+                if(s[j] - 'a' == i) {
+                    if(first == -1) first = j;
+                    else last = j;
+                }
+            }
+
+            if(first != -1 && last != -1) {
+                vector<int> freq (26);
+                for(int j=first+1; j<last; j++) freq[s[j] - 'a']++;
+                for(int j=0; j<26; j++) {
+                    if(freq[j]) count++;
+                }
             }
         }
-
         return count;
     }
+};
 
+
+
+
+
+
+
+class Solution {
+public:
     int countPalindromicSubsequence(string s) {
-        // unordered_map<char, int> first;
-        // unordered_map<char, int> last;
-
-        // for(int i=0; i<s.size(); i++)
-        // {
-        //     if(first.find(s[i]) == first.end()) first[s[i]] = i;
-        //     last[s[i]] = i;
-        // }
-
-        // // for each diff char check no of unique characters b/w first and last position if diff b/w first and last postion is >= 3:
-        // int ans = 0;
-        // for(auto i: first)
-        // {
-        //     int firstIndex = i.second;
-        //     int lastIndex = last[i.first];
-
-        //     if(lastIndex - firstIndex >= 2)
-        //     {
-        //         ans += checkUnique(s, firstIndex, lastIndex);
-        //     }
-        // }
-
-        // return ans;
-
-        int ans = 0;
-        for(int i=0; i<26; i++)
-        {
-            int firstIndex = s.find('a' + i);
-            int lastIndex = s.rfind('a' + i);
-
-            if(firstIndex != -1 && lastIndex != -1 && lastIndex - firstIndex >= 2)
-            {
-                ans += checkUnique(s, firstIndex, lastIndex);
-            }
+        vector<int> first (26, -1);
+        vector<int> last (26, -1);
+        int n = s.size();
+        for(int i=0; i<n; i++) {
+            int charIndex = s[i] - 'a';
+            if(first[charIndex] == -1) first[charIndex] = i;
+            else last[charIndex] = i;
         }
 
-        return ans;
+        int count = 0;
+        for(int i=0; i<26; i++) {
+            if(first[i] != -1 && last[i] != -1) {
+                vector<int> freq (26);
+                for(int j=first[i]+1; j<last[i]; j++) freq[s[j] - 'a']++;
+                for(int j=0; j<26; j++) {
+                    if(freq[j]) count++;
+                }
+            }
+        }
+        return count;
     }
 };
